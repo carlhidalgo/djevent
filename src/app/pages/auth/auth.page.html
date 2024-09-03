@@ -1,6 +1,36 @@
-<app-header title = "login"> </app-header>
+<app-header title = "Login"> </app-header>
+
+
 
 <ion-content>
-
   
+  <div class="d-flex-center">
+
+   <form  [formGroup]="form" class="auth-form" >
+  
+      <app-custom-input 
+      autocomplete="email"
+      icon="mail-outline"
+      [Control]="form.controls.email"
+      type="email"
+      label="Email"
+      ></app-custom-input>
+    
+      
+    
+    
+      <app-custom-input
+      [Control]="form.controls.password"
+      icon="lock-closed-outline"
+      type="password"
+      label="Password"
+      
+      ></app-custom-input>
+  
+  
+    
+    </form>
+  
+  </div>
+
 </ion-content>

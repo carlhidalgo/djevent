@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.page.html',
@@ -8,10 +10,12 @@ import { Component, OnInit } from '@angular/core';
 export class AuthPage implements OnInit {
 
 
-  username: string= ''
-  password: string= ''
+  form = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)])
+  });
 
-  
+
   constructor() { }
 
   ngOnInit() {
