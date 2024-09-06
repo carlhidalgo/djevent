@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { signInWithEmailAndPassword, getAuth ,createUserWithEmailAndPassword,updateProfile } from 'firebase/auth';
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getFirestore, setDoc, doc} from '@Angular/fire/Firestore';
+import { getFirestore, setDoc, doc} from '@Angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
