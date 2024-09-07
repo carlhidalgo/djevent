@@ -67,6 +67,7 @@ form = new FormGroup({
 
         this.utilsSvc.saveInLocalStorage('user', this.form.value);
         this.utilsSvc.routerlink('/main/home');
+        this.form.reset();
  
         
       }).catch(error => {
