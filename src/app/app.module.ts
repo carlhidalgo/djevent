@@ -10,21 +10,21 @@ import { AppRoutingModule } from './app-routing.module';
 
 // ======= firebase ========//
 import { AngularFireModule } from '@angular/fire/compat';
-import { environment } from 'src/environments/environment';
-import { share } from 'rxjs';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { environment } from 'src/environments/environment.prod';
 import { SharedModule } from './shared/shared.module';
-import { SignUpPage } from './pages/auth/sign-up/sign-up.page';
 
 @NgModule({
-  declarations: [AppComponent
-  ],
-
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    ReactiveFormsModule, // Añade ReactiveFormsModule al array de imports
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig), // Inicializa Firebase con la configuración del entorno
+    AngularFireAuthModule, // Importa el módulo de autenticación de Firebase
+    AngularFirestoreModule, // Importa el módulo de Firestore de Firebase
     SharedModule
   ],
   
