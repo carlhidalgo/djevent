@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword, getAuth ,createUserWithEmailAndPassword,upd
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { getFirestore, setDoc, doc, getDoc} from '@angular/fire/firestore';
+import { UtilsService } from './utils.service';
 
 
 @Injectable({
@@ -13,6 +14,7 @@ export class FirebaseService {
 
   auth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);
+  utilsSvc = inject(UtilsService);
 
   //////////////////////////// Autenticacion ////////////////////////////
 
@@ -24,6 +26,13 @@ export class FirebaseService {
   // acceder
   signIn(user: User) {
     return signInWithEmailAndPassword(getAuth(), user.email, user.password);
+  }
+
+  // cerrar sesion
+  signOut() {
+     getAuth().signOut();
+     localStorage.removeItem('user');
+      this.utilsSvc.routerlink('/auth');
   }
 
   // registrar
