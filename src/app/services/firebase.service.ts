@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { signInWithEmailAndPassword, getAuth ,createUserWithEmailAndPassword,updateProfile } from 'firebase/auth';
+import { signInWithEmailAndPassword, getAuth ,createUserWithEmailAndPassword,updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { getFirestore, setDoc, doc, getDoc} from '@angular/fire/firestore';
@@ -16,6 +16,11 @@ export class FirebaseService {
 
   //////////////////////////// Autenticacion ////////////////////////////
 
+
+  getAuth() {
+    return getAuth();
+  }
+
   // acceder
   signIn(user: User) {
     return signInWithEmailAndPassword(getAuth(), user.email, user.password);
@@ -29,6 +34,11 @@ export class FirebaseService {
   // actualizar perfil
   updateProfile(displayName: string) {
     return updateProfile(getAuth().currentUser, { displayName })
+  }
+
+  // enviar correo de recuperacion
+  sendRecoveryEmail(email: string) {
+    return sendPasswordResetEmail(getAuth(), email);
   }
 
   //////////////////////////// Firestore(baseDatos) ////////////////////////////

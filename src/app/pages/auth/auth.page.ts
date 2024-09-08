@@ -32,7 +32,6 @@ export class AuthPage implements OnInit {
 
       this.firebaseSvc.signIn(this.form.value as User).then(res => {
 
-        console.log(res);
 
         this.getUserInfo(res.user.uid);
 
