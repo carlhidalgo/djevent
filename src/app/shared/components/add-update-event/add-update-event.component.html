@@ -1,3 +1,50 @@
-<p>
-  add-update-event works!
-</p>
+<app-header [isModal]="true" title="agregar evento" ></app-header>
+
+<ion-content>
+
+  <form [formGroup]="form" class="ion-padding ion-text-center" (ngSubmit)="submit()" (keypress.enter)="submit()">
+
+
+    <ion-button (click)="takePicture() " expand="block" fill="clear" shape="round">
+      Agregar imagen
+    </ion-button>
+
+     <!--=============name=============-->
+
+     <app-custom-input autocomplete="name" [Control]="form.controls.name" type="name"
+     label="nombre"></app-custom-input>
+
+    <div class="validators" *ngIf="form.controls.name.errors && form.controls.name.touched">
+      
+      <div *ngIf="form.controls.name.errors?.['minlength']">la contraseña debe tener al menos 6 caracteres</div>
+    </div>
+
+     <!--=============date=============-->
+     <ion-item>
+      <ion-label>Fecha</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" formControlName="date"></ion-datetime>
+    </ion-item>
+
+
+    <!--=============location=============-->
+    <app-custom-input autocomplete="off" [Control]="form.controls.location" type="text" label="ubicación"></app-custom-input>
+
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+
+    <ion-button mode="ios" class="ion-margin" type="submit" [disabled]="form.invalid" expand="block" color="primary">agregar evento
+      <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
+    </ion-button>
+
+
+
+
+
+
+
+  </form>
+
+
+
+</ion-content>

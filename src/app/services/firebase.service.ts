@@ -11,6 +11,9 @@ import { UtilsService } from './utils.service';
   providedIn: 'root'
 })
 export class FirebaseService {
+  uploadImage(dataUrl: string, imagePath: string): any {
+    throw new Error('Method not implemented.');
+  }
 
   auth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);

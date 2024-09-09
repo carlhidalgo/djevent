@@ -20,6 +20,11 @@ export class HomePage implements OnInit {
 
   // ================== agrega los eventos ==================
 
+
+  singout() {
+    this.firevaseSvc.signOut();
+  }
+
   addUpdateEvent() {
     this.utilsSvc.presentModal({
       component: AddUpdateEventComponent,

@@ -17,13 +17,19 @@ ion-item {
     }
 
     &.active {
-        color: var(--ion-color-light);
+        color: var(--ion-color-warning);
 
         ion-icon {
-            color: var(--ion-color-light);
+            color: var(--ion-color-warning);
         }
         
     }
+}
+
+ion-menu {
+  --width: 200px;
+  --min--width: 200px;
+  outline: none;
 }
 
 .event-card {

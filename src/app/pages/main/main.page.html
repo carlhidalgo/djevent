@@ -1,19 +1,27 @@
-<ion-menu contentId="menu-content" menuId="menu-content" side="start" >
-  <app-header></app-header>
 
-  <ion-content>
-    
 
-    <ion-menu-toggle auto-Hide="false" *ngFor="let p of pages">
+<ion-router-outlet id="menu-content" main></ion-router-outlet>
 
-      <ion-item [routerLink]="p.url" routerDirection="root" detail>
-        <ion-icon slot="start" [name]="p.icon"></ion-icon>
-        <ion-label>{{p.title}}</ion-label>
-      </ion-item>
-    </ion-menu-toggle>
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="home">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Home</ion-label>
+    </ion-tab-button>
 
-  </ion-content>
-</ion-menu>
+    <ion-tab-button tab="search">
+      <ion-icon name="search-outline"></ion-icon>
+      <ion-label>Search</ion-label>
+    </ion-tab-button>
 
-<ion-router-outlet id="menu-content" main> </ion-router-outlet>
+    <ion-tab-button tab="notifications">
+      <ion-icon name="notifications-outline"></ion-icon>
+      <ion-label>Notifications</ion-label>
+    </ion-tab-button>
 
+    <ion-tab-button tab="profile">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>Profile</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
