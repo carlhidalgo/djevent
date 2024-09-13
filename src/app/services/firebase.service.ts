@@ -3,21 +3,26 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { signInWithEmailAndPassword, getAuth ,createUserWithEmailAndPassword,updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getFirestore, setDoc, doc, getDoc} from '@angular/fire/firestore';
+import { getFirestore, setDoc, doc, getDoc,addDoc,collection} from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { getStorage, uploadString, ref, getDownloadURL} from "firebase/storage";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
-  uploadImage(dataUrl: string, imagePath: string): any {
-    throw new Error('Method not implemented.');
+
+  updateDocument(path: string, data: any) {
+    return setDoc(doc(getFirestore(), path), data, { merge: true });
   }
+
 
   auth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);
   utilsSvc = inject(UtilsService);
+  storage = inject(AngularFireStorage);
 
   //////////////////////////// Autenticacion ////////////////////////////
 
@@ -54,15 +59,38 @@ export class FirebaseService {
   }
 
   //////////////////////////// Firestore(baseDatos) ////////////////////////////
+  ///
 
+  //  setear documento
   setDocument(path: string, data: any) {
     return setDoc(doc(getFirestore(), path), data);
   
   }
 
+  // obtener documento
   async getDocument(path: string) {
     return (await getDoc(doc(getFirestore(), path))).data();
   
+  }
+
+  // agregar documento
+  addDocument(path: string, data: any) {
+    return addDoc(collection(getFirestore(), path), data);
+  
+  }
+
+
+  //////////////////////////// Storage ////////////////////////////
+
+  // subir imagen
+  async uploadImage(Path: string, dataUrl: string) {
+    return uploadString(ref(getStorage(), Path), dataUrl, 'data_url').then(() => {
+    return getDownloadURL(ref(getStorage(), Path)); 
+  
+  
+      }  
+    )
+ 
   }
 
 }

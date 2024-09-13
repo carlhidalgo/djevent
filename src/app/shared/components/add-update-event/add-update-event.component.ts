@@ -26,11 +26,17 @@ form = new FormGroup({
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
+  user = {} as User;
+  
+
   private map: L.Map;
   private marker: L.Marker;
 
 
   ngOnInit() {
+
+
+    this.user = this.utilsSvc.getFromLocalStorage('user');
 
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: 'assets/images/leaflet/marker-icon-2x.png',
@@ -42,10 +48,13 @@ form = new FormGroup({
     this.initMap();
   }
 
-
+  onLocationSelected(location: { lat: number, lng: number }) {
+    this.form.controls['location'].setValue(`${location.lat}, ${location.lng}`);
+  }
+  
   // ================== takePicture ==================
 
-  async takePicture() {
+  async takeImage() {
     const dataUrl = (await this.utilsSvc.takePicture('imagen del evento')).dataUrl;
     this.form.controls.Image.setValue(dataUrl);
   }
@@ -78,16 +87,25 @@ form = new FormGroup({
   async submit() {
     if (this.form.valid) {
 
+      let path = `users/${this.user.uid}/events`;   
+
+
       const loading = await this.utilsSvc.loading();
       await loading.present();
 
- 
+      // === Subir la imagen y obtener la url ===
+      let dataUrl = this.form.value.Image;
+      let imagePath = `${this.user.uid}/${Date.now()}`;
+      let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
+      this.form.controls.Image.setValue(dataUrl);
 
-      this.firebaseSvc.signUp(this.form.value as User).then(async res => {
+      delete this.form.value.id;
 
-        await this.firebaseSvc.updateProfile(this.form.value.name);
+      this.firebaseSvc.addDocument(path, this.form.value).then(async res => {
 
-        let uid = res.user.uid;
+        this.utilsSvc.presentToast({ message: 'evento agregado exitosamente', duration: 1500, color: 'succes', position: 'middle', icon: 'checkmark-circle-outline' });
+
+        this.utilsSvc.dismisModal({success : true});
         
 
         

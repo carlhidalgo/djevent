@@ -1,50 +1,47 @@
-<app-header [isModal]="true" title="agregar evento" ></app-header>
+<app-header [isModal]="true" title="Agregar evento"></app-header>
 
 <ion-content>
-
   <form [formGroup]="form" class="ion-padding ion-text-center" (ngSubmit)="submit()" (keypress.enter)="submit()">
 
+ 
 
-    <ion-button (click)="takePicture() " expand="block" fill="clear" shape="round">
-      Agregar imagen
+    <!-- Componente de imagen -->
+    <ion-avatar *ngIf="form.value.Image">
+      <img [src]="form.value.Image"  />
+    </ion-avatar>
+
+    <!-- si no existe se muestra Icono de imagen -->
+    <ion-icon class="image-icon" *ngIf="!form.value.Image" name="image-outline"></ion-icon>
+
+    <br>
+  
+    <!-- Botón para tomar imagen -->
+    <ion-button (click)="takeImage()" mode="ios" size="small" shape="round">
+      Tomar/seleccionar
     </ion-button>
+    
 
-     <!--=============name=============-->
-
-     <app-custom-input autocomplete="name" [Control]="form.controls.name" type="name"
-     label="nombre"></app-custom-input>
+    <app-custom-input autocomplete="name" [Control]="form.controls.name" type="name"
+      label="Nombre"></app-custom-input>
 
     <div class="validators" *ngIf="form.controls.name.errors && form.controls.name.touched">
-      
-      <div *ngIf="form.controls.name.errors?.['minlength']">la contraseña debe tener al menos 6 caracteres</div>
+      <div *ngIf="form.controls.name.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres</div>
     </div>
 
-     <!--=============date=============-->
-     <ion-item>
+    <ion-item>
       <ion-label>Fecha</ion-label>
       <ion-datetime displayFormat="MM/DD/YYYY" formControlName="date"></ion-datetime>
     </ion-item>
 
+    <app-custom-input autocomplete="off" [Control]="form.controls.location" type="text" label="Ubicación"></app-custom-input>
 
-    <!--=============location=============-->
-    <app-custom-input autocomplete="off" [Control]="form.controls.location" type="text" label="ubicación"></app-custom-input>
+    <!-- Componente de mapa -->
+    <app-map (locationSelected)="onLocationSelected($event)"></app-map>
 
-    <div class="map-container">
-      <div id="map"></div>
-    </div>
-
-    <ion-button mode="ios" class="ion-margin" type="submit" [disabled]="form.invalid" expand="block" color="primary">agregar evento
+    <ion-button mode="ios" class="ion-margin" type="submit" [disabled]="form.invalid" expand="block" color="primary">
+      Agregar evento
       <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
     </ion-button>
 
-
-
-
-
-
-
   </form>
-
-
-
 </ion-content>

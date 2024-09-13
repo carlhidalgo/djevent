@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { CommonModule } from '@angular/common';
 import { AddUpdateEventComponent } from './components/add-update-event/add-update-event.component';
+import { MapComponent } from './components/map/map.component';
 
 
 
@@ -15,12 +16,15 @@ import { AddUpdateEventComponent } from './components/add-update-event/add-updat
       HeaderComponent,
       CustomInputComponent,
       LogoComponent,
-      AddUpdateEventComponent
+      AddUpdateEventComponent,
+      MapComponent
     ],
   exports: [
     HeaderComponent,
     CustomInputComponent,
-    LogoComponent
+    LogoComponent,
+    MapComponent,
+    AddUpdateEventComponent
   ],
   imports: [
     CommonModule,

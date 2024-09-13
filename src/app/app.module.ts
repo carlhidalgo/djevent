@@ -14,9 +14,10 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { environment } from 'src/environments/environment.prod';
 import { SharedModule } from './shared/shared.module';
+import { AddUpdateEventComponent } from './shared/components/add-update-event/add-update-event.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent,],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
