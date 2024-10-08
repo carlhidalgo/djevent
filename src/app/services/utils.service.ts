@@ -13,7 +13,7 @@ export class UtilsService {
   modalCtrl = inject(ModalController);
   router = inject(Router);
   
-  async takePicture(promptLabelHeader:string) {
+  async takeImage(promptLabelHeader:string) {
     return await Camera.getPhoto({
       quality: 90,
       allowEditing: true,

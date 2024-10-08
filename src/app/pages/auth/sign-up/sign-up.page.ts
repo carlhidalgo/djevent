@@ -3,7 +3,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
 import { UtilsService } from 'src/app/services/utils.service';
-import * as CryptoJS from 'crypto-js';
+
 
 @Component({
   selector: 'app-sign-up',
@@ -40,14 +40,13 @@ export class SignUpPage implements OnInit {
       await loading.present();
 
       // Encripta la contraseña usando CryptoJS
-      const encryptedPassword = CryptoJS.SHA256(this.form.value.password).toString();
-      console.log('Contraseña encriptada:', encryptedPassword);
+
 
       // Crea un nuevo objeto `User` con la contraseña encriptada
       const user: User = {
         uid: this.form.value.uid,
         email: this.form.value.email,
-        password: encryptedPassword, // Contraseña encriptada
+        password: this.form.value.password,
         displayName: this.form.value.name,
         name: this.form.value.name,
         role: this.form.value.role // Nuevo campo para el rol

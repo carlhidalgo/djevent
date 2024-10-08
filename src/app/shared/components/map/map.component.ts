@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { Loader } from '@googlemaps/js-api-loader'; // Usa el Loader de Google Maps
 
 @Component({
@@ -8,46 +8,59 @@ import { Loader } from '@googlemaps/js-api-loader'; // Usa el Loader de Google M
 })
 export class MapComponent implements OnInit {
   @ViewChild('mapContainer', { static: false }) mapContainer: ElementRef;
-  map: google.maps.Map;
+    
 
   @Output() locationSelected = new EventEmitter<{ lat: number, lng: number }>();
 
+
+  map: google.maps.Map;
+  marker: google.maps.marker.AdvancedMarkerElement | null = null;
+
+
+
   private loader = new Loader({
-    apiKey: 'TU_API_KEY', // Reemplaza con tu API key
+    apiKey: 'AIzaSyAfs4yQ4H89F6DyfFY8_1BqeZkSx9ght_0', 
     version: 'weekly',
+    libraries: ['marker'] // Asegúrate de incluir la biblioteca de marcadores
   });
 
   ngOnInit() {
     this.loader.load().then(() => {
-      this.loadMap();
-    }).catch(error => {
-      console.error('Error loading Google Maps:', error);
+      this.initMap();
     });
   }
 
-  loadMap() {
+  initMap() {
     const mapOptions: google.maps.MapOptions = {
       center: { lat: -33.4489, lng: -70.6693 }, // Coordenadas iniciales, Santiago, Chile
-      zoom: 14,
+      zoom: 12,
+      mapId: '6fd742fb8cb5c649 ' // Id del estilo de mapa
     };
 
     this.map = new google.maps.Map(this.mapContainer.nativeElement, mapOptions);
 
-    // Listener para el clic en el mapa
     this.map.addListener('click', (event: google.maps.MapMouseEvent) => {
-      const clickedLocation = {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng(),
-      };
-      this.locationSelected.emit(clickedLocation);
-      this.addMarker(clickedLocation);
+      this.onMapClick(event);
     });
+  }
+  
+  onMapClick(event: google.maps.MapMouseEvent) {
+    if (event.latLng) {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+
+      if (this.marker) {
+        this.marker.position = event.latLng;
+      } else {
+        this.marker = new google.maps.marker.AdvancedMarkerElement({
+          position: event.latLng,
+          map: this.map,
+        });
+      }
+
+      this.locationSelected.emit({ lat, lng });
+    }
   }
 
-  addMarker(location: { lat: number, lng: number }) {
-    new google.maps.Marker({
-      position: location,
-      map: this.map,
-    });
-  }
+
 }

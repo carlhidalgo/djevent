@@ -3,7 +3,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
 import { UtilsService } from 'src/app/services/utils.service';
-import * as L from 'leaflet';
+import { ToastController } from '@ionic/angular'; 
 
 @Component({
   selector: 'app-add-update-event',
@@ -16,21 +16,21 @@ form = new FormGroup({
     id: new FormControl(''),
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     Image: new FormControl('', [Validators.required]),
-    description: new FormControl('', [Validators.required]),
+    description: new FormControl(''),
     date: new FormControl('', [Validators.required]),
-    location: new FormControl('', [Validators.required]),
-
+    location: new FormControl({ lat: 0, lng: 0 }, [Validators.required]), // Cambiado a objeto
+    creatorId: new FormControl(''),
   });
 
 
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
+  toastController = inject(ToastController);
 
+  
   user = {} as User;
   
 
-  private map: L.Map;
-  private marker: L.Marker;
 
 
   ngOnInit() {
@@ -38,57 +38,29 @@ form = new FormGroup({
 
     this.user = this.utilsSvc.getFromLocalStorage('user');
 
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: 'assets/images/leaflet/marker-icon-2x.png',
-      iconUrl: 'assets/images/leaflet/marker-icon.png',
-      shadowUrl: 'assets/images/leaflet/marker-shadow.png',
-    });
-
-
-    this.initMap();
+    this.form.controls['creatorId'].setValue(this.user.uid);
   }
 
   onLocationSelected(location: { lat: number, lng: number }) {
-    this.form.controls['location'].setValue(`${location.lat}, ${location.lng}`);
+    this.form.controls['location'].setValue(location);
   }
   
   // ================== takePicture ==================
 
   async takeImage() {
-    const dataUrl = (await this.utilsSvc.takePicture('imagen del evento')).dataUrl;
+    const dataUrl = (await this.utilsSvc.takeImage('imagen del evento')).dataUrl;
     this.form.controls.Image.setValue(dataUrl);
   }
 
-  private initMap(): void {
-    this.map = L.map('map').setView([-33.4489, -70.6693], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      
-    }).addTo(this.map);
-
-    this.marker = L.marker([51.505, -0.09], {
-      draggable: true
-    }).addTo(this.map);
-
-    this.marker.on('dragend', () => {
-      const position = this.marker.getLatLng();
-      this.form.controls.location.setValue(`${position.lat}, ${position.lng}`);
-    });
-
-    this.map.on('click', (e: L.LeafletMouseEvent) => {
-      this.marker.setLatLng(e.latlng);
-      this.form.controls.location.setValue(`${e.latlng.lat}, ${e.latlng.lng}`);
-    });
-  }
-
+  
   
 
 
   async submit() {
     if (this.form.valid) {
 
-      let path = `users/${this.user.uid}/events`;   
-
+     // let path = `users/${this.user.uid}/events`;   
+      let path = `events`;
 
       const loading = await this.utilsSvc.loading();
       await loading.present();
@@ -97,15 +69,24 @@ form = new FormGroup({
       let dataUrl = this.form.value.Image;
       let imagePath = `${this.user.uid}/${Date.now()}`;
       let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-      this.form.controls.Image.setValue(dataUrl);
+      this.form.controls.Image.setValue(imageUrl);
 
       delete this.form.value.id;
 
+      
+
       this.firebaseSvc.addDocument(path, this.form.value).then(async res => {
+
+
+
+        
+
+
+        this.utilsSvc.dismisModal({success : true});
+        
 
         this.utilsSvc.presentToast({ message: 'evento agregado exitosamente', duration: 1500, color: 'succes', position: 'middle', icon: 'checkmark-circle-outline' });
 
-        this.utilsSvc.dismisModal({success : true});
         
 
         

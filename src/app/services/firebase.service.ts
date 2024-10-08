@@ -73,10 +73,11 @@ export class FirebaseService {
   
   }
 
-  // agregar documento
-  addDocument(path: string, data: any) {
-    return addDoc(collection(getFirestore(), path), data);
-  
+   // agregar documento con ID personalizado
+   addDocument(path: string, data: any, id?: string) {
+    const firestore = getFirestore();
+    const docRef = id ? doc(firestore, path, id) : doc(collection(firestore, path)); // Si se proporciona un ID, se usa ese, sino Firebase generará uno.
+    return setDoc(docRef, data); // Usa setDoc en lugar de addDoc
   }
 
 

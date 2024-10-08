@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+
 import { User } from 'src/app/models/user.model';
 import { UtilsService } from 'src/app/services/utils.service';
 
@@ -55,7 +55,7 @@ copyEmail() {
   
     
   
-    const dataUrl = (await this.utilsSvc.takePicture('Imagen de Perfil')).dataUrl;
+    const dataUrl = (await this.utilsSvc.takeImage('Imagen de Perfil')).dataUrl;
 
     const loading = await this.utilsSvc.loading();
     await loading.present();
