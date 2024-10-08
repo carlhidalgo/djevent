@@ -22,6 +22,12 @@ export class MainPage implements OnInit {
       url: 'profile',
       icon: 'person-outline'
     },
+    {
+      title: 'eventos',
+      url: 'events',
+      icon: 'calendar-outline'
+    }
+    ,
     
   ];
 
