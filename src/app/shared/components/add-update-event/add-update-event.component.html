@@ -25,15 +25,29 @@
       label="Nombre"></app-custom-input>
 
     <div class="validators" *ngIf="form.controls.name.errors && form.controls.name.touched">
-      <div *ngIf="form.controls.name.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres</div>
+      <div *ngIf="form.controls.name.errors?.['minlength']">El nombre debe tener al menos 6 caracteres</div>
     </div>
+
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-textarea 
+        formControlName="description" 
+        (input)="updateCharCount(); adjustTextareaHeight($event)">
+      </ion-textarea>
+    </ion-item>
+    
+    <ion-text>{{ charCount }}/1000 caracteres</ion-text>
+    
 
     <ion-item>
       <ion-label>Fecha</ion-label>
       <ion-datetime displayFormat="MM/DD/YYYY" formControlName="date"></ion-datetime>
     </ion-item>
 
-    <app-custom-input autocomplete="off" [Control]="form.controls.location" type="text" label="Ubicación"></app-custom-input>
+    
+    
+
+    <app-custom-input [Control]="form.controls.location" type="text" label="Ubicación"></app-custom-input>
 
     <!-- Componente de mapa -->
     <app-map (locationSelected)="onLocationSelected($event)"></app-map>

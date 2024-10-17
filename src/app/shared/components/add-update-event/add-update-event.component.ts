@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
@@ -11,13 +11,22 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./add-update-event.component.scss'],
 })
 export class AddUpdateEventComponent  implements OnInit {
+  
+  @ViewChild('addressInput') addressInput!: ElementRef; // Elemento de referencia al campo de dirección
+
+  mapCenter: google.maps.LatLngLiteral = { lat: -33.0, lng: -71.0 }; // Coordenadas iniciales
+
+  address: string = '';
+  geocoder: any;
+  autocomplete: any; // Instancia del autocompletado de Google Places
 
 form = new FormGroup({
     id: new FormControl(''),
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     Image: new FormControl('', [Validators.required]),
-    description: new FormControl(''),
-    date: new FormControl('', [Validators.required]),
+    description: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
+    date: new FormControl(new Date().toISOString(), [Validators.required]),
+    address: new FormControl('', ), 
     location: new FormControl({ lat: 0, lng: 0 }, [Validators.required]), // Cambiado a objeto
     creatorId: new FormControl(''),
   });
@@ -29,23 +38,75 @@ form = new FormGroup({
 
   
   user = {} as User;
-  
+  charCount = 0;
 
 
 
   ngOnInit() {
 
+    this.geocoder = new google.maps.Geocoder();
 
     this.user = this.utilsSvc.getFromLocalStorage('user');
 
     this.form.controls['creatorId'].setValue(this.user.uid);
+
+    this.updateCharCount(); // Inicializar el contador de caracteres
+    this.initAutocomplete(); // Inicializar el autocompletado de direcciones
+  }
+  
+  adjustTextareaHeight(event: Event) {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
   }
 
   onLocationSelected(location: { lat: number, lng: number }) {
     this.form.controls['location'].setValue(location);
   }
+
+  // Método para manejar cuando el usuario cambia manualmente la dirección
+  handleAddressChange(event: any) {
+    const address = event.detail.value;
+    if (address) {
+      this.geocoder.geocode({ address: address }, (results: any, status: any) => {
+        if (status === 'OK' && results[0]) {
+          const location = results[0].geometry.location;
+          this.form.controls['location'].setValue({ lat: location.lat(), lng: location.lng() });
+          this.mapCenter = { lat: location.lat(), lng: location.lng() }; // Actualiza el mapa
+        } else {
+          console.error('Error al geocodificar la dirección: ', status);
+        }
+      });
+    }
+  }
+
+  initAutocomplete() {
+    // Configurar el autocompletado
+    this.autocomplete = new google.maps.places.Autocomplete(
+      this.addressInput.nativeElement,
+      {
+        types: ['geocode'], // Solo autocompletar direcciones
+        componentRestrictions: { country: 'cl' }, // Limitar a Chile (si es necesario)
+      }
+    );
+
+    // Evento cuando se selecciona una sugerencia de dirección
+    this.autocomplete.addListener('place_changed', () => {
+      const place = this.autocomplete.getPlace();
+      if (place.geometry) {
+        // Actualizar coordenadas y dirección en el formulario
+        const location = place.geometry.location;
+        this.form.controls['location'].setValue({ lat: location.lat(), lng: location.lng() });
+        this.mapCenter = { lat: location.lat(), lng: location.lng() };
+      } 
+    });
+  }
+
+  updateCharCount() {
+    this.charCount = this.form.controls['description'].value.length;
+  }
   
-  // ================== takePicture ==================
+  // ================== Tomar una imagen ==================
 
   async takeImage() {
     const dataUrl = (await this.utilsSvc.takeImage('imagen del evento')).dataUrl;
@@ -71,7 +132,7 @@ form = new FormGroup({
       let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
       this.form.controls.Image.setValue(imageUrl);
 
-      delete this.form.value.id;
+      
 
       
 

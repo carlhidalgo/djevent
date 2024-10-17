@@ -3,10 +3,11 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { signInWithEmailAndPassword, getAuth ,createUserWithEmailAndPassword,updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getFirestore, setDoc, doc, getDoc,addDoc,collection,collectionData,query, where } from '@angular/fire/firestore';
+import { getFirestore, setDoc, doc, getDoc,addDoc,collection,collectionData,query, where, getDocs } from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { getStorage, uploadString, ref, getDownloadURL} from "firebase/storage";
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -108,5 +109,36 @@ export class FirebaseService {
     )
  
   }
+
+  async addapplicants(eventId: string, applicantsData: any) {
+    const path = `events/${eventId}/applicants`;
+    try {
+      // Aquí se usa addDocument para agregar el applicants a la colección
+      await this.addDocument(path, applicantsData);
+      console.log('applicants agregado con éxito');
+    } catch (error) {
+      console.error('Error al agregar applicants:', error);
+      throw error; 
+    }
+  }
+
+  async isUserRegistered(eventId: string, userId: string): Promise<boolean> {
+    const path = `events/${eventId}/applicants`;
+    const applicantsCollection = collection(getFirestore(), path);
+    const q = query(applicantsCollection, where('userId', '==', userId));
+  
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty; // Retorna true si ya existe, false si no
+  }
+
+
+  getEventById(eventId: string) {
+    return this.firestore.collection('events').doc(eventId).get().toPromise();
+  }
+
+  getEvents(): Observable<any[]> {
+    return this.firestore.collection('events').valueChanges({ idField: 'id' });
+  }
+
 
 }

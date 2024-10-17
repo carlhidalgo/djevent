@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { Event } from 'src/app/models/event.model';
 
 @Component({
   selector: 'app-events',
@@ -14,7 +15,9 @@ export class EventsPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
-  constructor() { }
+  events: Event[] = [];
+
+
 
   ngOnInit() {
   }
@@ -24,16 +27,18 @@ export class EventsPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.getEvents();
+    this.getEventsUser();
   }
 
   //obtener eventos
-  getEvents() {
+  getEventsUser() {
     let path = `events`;
+    let user = this.user();
     
-    let sub = this.firebaseSvc.getCollectionData(path).subscribe({
+    let sub = this.firebaseSvc.getCollectionUser(path, user.uid).subscribe({
      next: (res: any) => {
        console.log(res);
+       this.events = res;
        sub.unsubscribe();
        },
        error: (err: any) => {

@@ -21,3 +21,18 @@
     margin: 0 auto;
 
   }
+
+  ion-textarea {
+    textarea {
+      overflow: hidden;
+      resize: none;
+    
+    --border-color: #e0e0e0;
+    --border-radius: 15px;
+    --border-style: solid;
+    --border-width: 1px;
+    margin: 20px 0;
+    }
+
+   
+  }

@@ -13,9 +13,13 @@ export class CustomInputComponent  implements OnInit {
   @Input() label!: string;
   @Input() autocomplete!: string;
   @Input() icon!: string;
+  @Input() maxlength: number;
+  @Input() autoGrow: boolean;
 
   isPassword!: boolean;
   hide: boolean = true;
+  charCount: number = 0;
+
 
 
   constructor() { }
@@ -23,7 +27,19 @@ export class CustomInputComponent  implements OnInit {
   ngOnInit() {
     if (this.type === 'password') {
       this.isPassword = true;
-  }}
+  }
+  this.updateCharCount();
+
+
+}
+
+onInputChange() {
+  this.updateCharCount();
+}
+
+updateCharCount() {
+  this.charCount = this.Control.value ? this.Control.value.length : 0;
+}
 
   showOrHidePassword() {
     this.hide = !this.hide;
