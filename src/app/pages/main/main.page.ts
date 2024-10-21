@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from 'firebase/auth';
+
+import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
@@ -31,6 +32,8 @@ export class MainPage implements OnInit {
     
   ];
 
+  darkMode: boolean = false;
+
   router = inject(Router);
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
@@ -43,6 +46,9 @@ export class MainPage implements OnInit {
       if(event?.url) this.currentPath = event.url;
             
     })
+
+    this.darkMode = localStorage.getItem('darkMode') === 'true';
+    document.body.classList.toggle('dark', this.darkMode); 
   }
 
   user(): User {

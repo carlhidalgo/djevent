@@ -133,3 +133,38 @@ ion-button {
         --height: 680px;
     }
 }
+
+body.dark {
+    --ion-background-color: #121212;
+    --ion-text-color: #9701a5;
+    --ion-card-background: #1e1e1e;
+    --ion-card-title-color: #ffffff;
+    --ion-card-content-color: #ffffff;
+    --ion-toolbar-background: #1e1e1e;
+    --ion-toolbar-color: #ffffff;
+    --ion-item-background: #1e1e1e;
+    --ion-item-color: #8f0f5e;
+    --ion-input-background: #1e1e1e;
+    --ion-input-color: #ffffff;
+    --ion-label-color: #ffffff;
+    --ion-icon-color: #ffffff;
+    --ion-button-background: #1e1e1e;
+    --ion-button-color: #ffffff;
+    --ion-button-activated-background: #1e1e1e;
+    --ion-button-activated-color: #ffffff;
+    --ion-button-disabled-background: #1e1e1e;
+    --ion-button-disabled-color: #ffffff;
+    --ion-button-text-color: #ffffff;
+    --ion-tab-bar-background: #1e1e1e;
+    --ion-tab-bar-color: #8a0ec4;
+
+    ion-datetime {
+        --background: #fff1f2;
+        --background-rgb: 255, 241, 242;
+      
+        border-radius: 16px;
+        box-shadow: rgba(var(--ion-color-grey-rgb), 0.3) 0px 10px 15px -3px;
+      }
+  }
+
+ 

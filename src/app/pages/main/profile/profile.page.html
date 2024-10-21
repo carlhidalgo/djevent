@@ -39,4 +39,21 @@
     <ion-label>Terminos y condiciones</ion-label>
   </ion-item>
 
+  <ion-item button detail>
+    <ion-icon color="priamry" slot="start" name="lock-closed-outline"></ion-icon>
+    <ion-label>Políticas de privacidad</ion-label>
+  </ion-item>       
+
+  <ion-item button detail>
+    <ion-icon color="priamry" slot="start" name="help-circle-outline"></ion-icon>
+    <ion-label>Ayuda</ion-label>                        
+
+    |</ion-item>                                                                        
+
+  
+    <ion-button (click)="toggleTheme()">
+      Modo Oscuro
+      <ion-icon [name]="darkMode ? 'sunny' : 'moon'"></ion-icon>
+    </ion-button>
+
 </ion-content>

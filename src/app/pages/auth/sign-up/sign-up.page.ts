@@ -18,7 +18,8 @@ export class SignUpPage implements OnInit {
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     confirmPassword: new FormControl('', [Validators.required]),  // Nuevo campo de confirmación de contraseña
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    role: new FormControl('user', Validators.required)  // Nuevo campo para el rol
+    role: new FormControl('', Validators.required),  // Nuevo campo para el rol
+    termsConditions: new FormControl(false, Validators.requiredTrue)  // Nuevo campo para aceptar términos y condiciones
   }, { validators: this.passwordsMatchValidator });  // Agregar validador personalizado
 
   firebaseSvc = inject(FirebaseService);
@@ -39,20 +40,10 @@ export class SignUpPage implements OnInit {
       const loading = await this.utilsSvc.loading();
       await loading.present();
 
-      // Encripta la contraseña usando CryptoJS
 
 
-      // Crea un nuevo objeto `User` con la contraseña encriptada
-      const user: User = {
-        uid: this.form.value.uid,
-        email: this.form.value.email,
-        password: this.form.value.password,
-        displayName: this.form.value.name,
-        name: this.form.value.name,
-        role: this.form.value.role // Nuevo campo para el rol
-        ,
-        image: ''
-      };
+
+      const user = this.form.value as User;
 
       this.firebaseSvc.signUp(user).then(async res => {
         await this.firebaseSvc.updateProfile(user.name);
@@ -76,7 +67,7 @@ export class SignUpPage implements OnInit {
 
       const path = `users/${uid}`;
       delete this.form.value.password;
-      delete this.form.value.confirmPassword;  // No guardes la confirmación de la contraseña
+      delete this.form.value.confirmPassword;  // No guarda la confirmación de la contraseña
 
       this.firebaseSvc.setDocument(path, this.form.value).then(async res => {
         this.utilsSvc.saveInLocalStorage('user', this.form.value);

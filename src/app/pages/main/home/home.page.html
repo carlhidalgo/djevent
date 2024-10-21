@@ -2,12 +2,16 @@
 
 
 </app-header>
-<ion-content *ngIf="userLocation">
-    
+<ion-content >
+  <ion-fab horrizontal="end" vertical="bottom"  slot="fixed">
+    <ion-fab-button  (click)="addUpdateEvent()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
     
     <ion-item>
-      <ion-label position="floating">Dirección</ion-label>
-      <ion-input id="autocomplete" placeholder="Ingresa tu dirección"></ion-input>
+      <ion-label position="floating" > Dirección </ion-label>
+      <ion-input id="autocomplete" placeholder=""></ion-input>
     </ion-item>
 
     <ion-button expand="full" (click)="useManualLocation()">Usar esta dirección</ion-button>
@@ -21,7 +25,7 @@
       <ion-card-title>¡Bienvenido!</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p>Estos son tus Eventos.</p>
+      <p>Estos son los Eventos.</p>
     </ion-card-content>
     </ion-card>
     
@@ -47,26 +51,9 @@
       </ion-item-sliding>
     </ion-list>
 
-   
-      
-   
-   
-    
-   
-    
-    
-    
-    
+ 
+
   
-
-    
-
-
-  <ion-fab vertical="bottom" horrizontal="end" slot="fixed">
-    <ion-fab-button  (click)="addUpdateEvent()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 
   <ion-modal #eventModal [cssClass]="'modal-open'">
     <ng-template>

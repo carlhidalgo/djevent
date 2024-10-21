@@ -11,6 +11,18 @@ import { UtilsService } from 'src/app/services/utils.service';
 })
 export class ProfilePage {
 
+  darkMode: boolean = false;
+
+ toggleTheme() {
+  this.darkMode = !this.darkMode;
+  document.body.classList.toggle('dark', this.darkMode);
+  localStorage.setItem('darkMode', this.darkMode ? 'true' : 'false');
+}
+
+  ngOnInit() {
+    this.darkMode = localStorage.getItem('darkMode') === 'true';
+    document.body.classList.toggle('dark', this.darkMode); 
+  }
 
 copyEmail() {
   const user = this.user();

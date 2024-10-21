@@ -59,6 +59,11 @@
         <div *ngIf="form.controls.role.errors?.['required']">El rol es requerido</div>
       </div>
 
+      <!--=============terms and conditions=============-->
+      <ion-item>
+        <ion-checkbox formControlName="termsConditions" id="termsCheckbox" required >Acepto los <a href="#" (click)="$event.stopPropagation()">terminos y condiciones</a></ion-checkbox>
+      </ion-item>
+
       <ion-button type="submit" [disabled]="form.invalid" expand="block" color="primary">
         registrarse
         <ion-icon slot="end" name="log-in-outline"></ion-icon>
