@@ -1,10 +1,11 @@
 export interface Event {
+    target: HTMLTextAreaElement;
     id: string,
     name: string,
     creatorId: string,
     Image: string,
     description: string,
-    date: Date,
+    date: string,
     location: {
         lng: number,
         lat: number,

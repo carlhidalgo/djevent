@@ -1,7 +1,8 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
+import { Event } from 'src/app/models/event.model';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ToastController } from '@ionic/angular'; 
 
@@ -11,6 +12,9 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./add-update-event.component.scss'],
 })
 export class AddUpdateEventComponent  implements OnInit {
+
+  @Input() event: Event 
+  
   
   @ViewChild('addressInput') addressInput!: ElementRef; // Elemento de referencia al campo de dirección
 
@@ -26,7 +30,6 @@ form = new FormGroup({
     Image: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
     date: new FormControl(new Date().toISOString(), [Validators.required]),
-    address: new FormControl('', ), 
     location: new FormControl({ lat: 0, lng: 0 }, [Validators.required]), // Cambiado a objeto
     creatorId: new FormControl(''),
   });
@@ -48,10 +51,13 @@ form = new FormGroup({
 
     this.user = this.utilsSvc.getFromLocalStorage('user');
 
+    
+
     this.form.controls['creatorId'].setValue(this.user.uid);
 
     this.updateCharCount(); // Inicializar el contador de caracteres
-    this.initAutocomplete(); // Inicializar el autocompletado de direcciones
+    if (this.event) this.form.setValue(this.event);
+    
   }
   
   adjustTextareaHeight(event: Event) {
@@ -64,43 +70,9 @@ form = new FormGroup({
     this.form.controls['location'].setValue(location);
   }
 
-  // Método para manejar cuando el usuario cambia manualmente la dirección
-  handleAddressChange(event: any) {
-    const address = event.detail.value;
-    if (address) {
-      this.geocoder.geocode({ address: address }, (results: any, status: any) => {
-        if (status === 'OK' && results[0]) {
-          const location = results[0].geometry.location;
-          this.form.controls['location'].setValue({ lat: location.lat(), lng: location.lng() });
-          this.mapCenter = { lat: location.lat(), lng: location.lng() }; // Actualiza el mapa
-        } else {
-          console.error('Error al geocodificar la dirección: ', status);
-        }
-      });
-    }
-  }
 
-  initAutocomplete() {
-    // Configurar el autocompletado
-    this.autocomplete = new google.maps.places.Autocomplete(
-      this.addressInput.nativeElement,
-      {
-        types: ['geocode'], // Solo autocompletar direcciones
-        componentRestrictions: { country: 'cl' }, // Limitar a Chile (si es necesario)
-      }
-    );
 
-    // Evento cuando se selecciona una sugerencia de dirección
-    this.autocomplete.addListener('place_changed', () => {
-      const place = this.autocomplete.getPlace();
-      if (place.geometry) {
-        // Actualizar coordenadas y dirección en el formulario
-        const location = place.geometry.location;
-        this.form.controls['location'].setValue({ lat: location.lat(), lng: location.lng() });
-        this.mapCenter = { lat: location.lat(), lng: location.lng() };
-      } 
-    });
-  }
+
 
   updateCharCount() {
     this.charCount = this.form.controls['description'].value.length;
@@ -114,11 +86,19 @@ form = new FormGroup({
   }
 
   
-  
-
-
   async submit() {
     if (this.form.valid) {
+    
+      if (this.event) this.updateEvent();
+       else  this.createEvent()
+      
+    }
+  }
+
+
+  // ================== Crear evento ==================
+  async createEvent() {
+    
 
      // let path = `users/${this.user.uid}/events`;   
       let path = `events`;
@@ -158,7 +138,55 @@ form = new FormGroup({
       }).finally(() => {
         loading.dismiss();
       })
-    }
+    
+  }
+
+  // ================== Actualizar un evento ==================
+  async updateEvent() {
+    
+
+     // let path = `users/${this.user.uid}/events`;   
+      let path = `events/${this.event.id}`;
+
+      const loading = await this.utilsSvc.loading();
+      await loading.present();
+
+      // === Subir la imagen y obtener la url ===
+      if (this.form.value.Image !== this.event.Image) {
+        let dataUrl = this.form.value.Image;
+        let imagePath = await this.firebaseSvc.getFilePath(this.event.Image);
+        let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
+        this.form.controls.Image.setValue(imageUrl);
+      }
+      
+
+      
+
+      
+
+      this.firebaseSvc.updateDocument(path, this.form.value).then(async res => {
+
+
+
+        
+
+
+        this.utilsSvc.dismisModal({success : true});
+        
+
+        this.utilsSvc.presentToast({ message: 'evento actualizado exitosamente', duration: 1500, color: 'succes', position: 'middle', icon: 'checkmark-circle-outline' });
+
+        
+
+        
+      }).catch(error => {
+        console.log(error);
+        this.utilsSvc.presentToast({ message: error.message, duration: 2000, color: 'danger', position: 'middle', icon: 'alert-circle-outline' });
+
+      }).finally(() => {
+        loading.dismiss();
+      })
+    
   }
 
 }

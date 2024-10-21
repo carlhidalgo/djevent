@@ -1,4 +1,4 @@
-<app-header [isModal]="true" title="Agregar evento"></app-header>
+<app-header [isModal]="true" [title]="event ? 'actualizar evento' :'Agregar evento'"></app-header>
 
 <ion-content>
   <form [formGroup]="form" class="ion-padding ion-text-center" (ngSubmit)="submit()" (keypress.enter)="submit()">
@@ -32,7 +32,7 @@
       <ion-label position="floating">Descripción</ion-label>
       <ion-textarea 
         formControlName="description" 
-        (input)="updateCharCount(); adjustTextareaHeight($event)">
+        (input)="updateCharCount(); adjustTextareaHeight(event)">
       </ion-textarea>
     </ion-item>
     
@@ -53,7 +53,7 @@
     <app-map (locationSelected)="onLocationSelected($event)"></app-map>
 
     <ion-button mode="ios" class="ion-margin" type="submit" [disabled]="form.invalid" expand="block" color="primary">
-      Agregar evento
+      {{ event ? 'actualizar evento' : 'Agregar evento' }}
       <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
     </ion-button>
 

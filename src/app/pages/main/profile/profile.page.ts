@@ -3,6 +3,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 
 import { User } from 'src/app/models/user.model';
 import { UtilsService } from 'src/app/services/utils.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-profile',
@@ -11,7 +12,20 @@ import { UtilsService } from 'src/app/services/utils.service';
 })
 export class ProfilePage {
 
+  form = new FormGroup({
+
+    email: new FormControl(''),
+
+    name: new FormControl(''),
+
+  
+  });
+
+  
   darkMode: boolean = false;
+
+  
+
 
  toggleTheme() {
   this.darkMode = !this.darkMode;
@@ -100,4 +114,8 @@ copyEmail() {
   }
 
   // ================== updateProfile ==================
+
+  
+
+
 }

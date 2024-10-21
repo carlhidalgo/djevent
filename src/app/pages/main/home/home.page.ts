@@ -17,12 +17,7 @@ import { IonModal, ToastController } from '@ionic/angular';
 export class HomePage implements OnInit {
   @ViewChild('eventModal', { static: true }) eventModal: IonModal;
 
-editEvent(arg0: any) {
-throw new Error('Method not implemented.');
-}
-deleteEvent(arg0: any) {
-throw new Error('Method not implemented.');
-}
+
 
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
@@ -148,10 +143,11 @@ throw new Error('Method not implemented.');
 
  
 
-  addUpdateEvent() {
+  addUpdateEvent( event?: Event) {
     this.utilsSvc.presentModal({
       component: AddUpdateEventComponent,
-      cssClass: 'add-update-modal'
+      cssClass: 'add-update-modal',
+      componentProps: { event }
     });
   }
 

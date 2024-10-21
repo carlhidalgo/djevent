@@ -3,10 +3,10 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { signInWithEmailAndPassword, getAuth ,createUserWithEmailAndPassword,updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getFirestore, setDoc, doc, getDoc,addDoc,collection,collectionData,query, where, getDocs } from '@angular/fire/firestore';
+import { getFirestore, setDoc, doc, getDoc,addDoc,collection,collectionData,query, where, getDocs, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { getStorage, uploadString, ref, getDownloadURL} from "firebase/storage";
+import { getStorage, uploadString, ref, getDownloadURL, deleteObject} from "firebase/storage";
 import { Observable } from 'rxjs';
 
 
@@ -15,9 +15,7 @@ import { Observable } from 'rxjs';
 })
 export class FirebaseService {
 
-  updateDocument(path: string, data: any) {
-    return setDoc(doc(getFirestore(), path), data, { merge: true });
-  }
+
 
 
   auth = inject(AngularFireAuth);
@@ -83,6 +81,18 @@ export class FirebaseService {
   
   }
 
+  
+  updateDocument(path: string, data: any) {
+    return updateDoc(doc(getFirestore(), path), data);
+  
+  }
+
+  // eliminar documento
+  deleteDocument(path: string) {
+    return deleteDoc(doc(getFirestore(), path));
+  
+  }
+
   // obtener documento
   async getDocument(path: string) {
     return (await getDoc(doc(getFirestore(), path))).data();
@@ -140,5 +150,13 @@ export class FirebaseService {
     return this.firestore.collection('events').valueChanges({ idField: 'id' });
   }
 
+
+  async getFilePath(url: string) {
+    return ref(getStorage(), url).fullPath;
+  }
+
+  deletefile(path: string) {
+    return deleteObject(ref(getStorage(), path));
+  }
 
 }
