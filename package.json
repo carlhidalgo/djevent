@@ -4,9 +4,13 @@
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
-    "ng": "ng",
+    "generate-env": "node env-config.js",
+    "serve:dev" : "ENV=development LOCAL_ENV=true npm run generate-env && ionic serve",
+    "serve:staging" : "ENV=staging LOCAL_ENV=true npm run generate-env && ionic serve --prod",
+    "serve:prod" : "ENV=production LOCAL_ENV=true npm run generate-env && ionic serve --prod",
     "start": "ng serve",
-    "build": "ng build",
+    "prebuild": "npm run generate-env",
+    "build": "ENV-productionnpm run generate-env && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
