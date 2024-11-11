@@ -1,6 +1,7 @@
 export const environment = {
     production: true,
-    
+    googleMapsApiKey: 'AIzaSyAfs4yQ4H89F6DyfFY8_1BqeZkSx9ght_0',
+
     firebaseConfig: {
       apiKey: "AIzaSyDoQ2FDCvTd3h3eJegeWY_-4mdWHHzSrEk",
       authDomain: "eventhub-9f513.firebaseapp.com",
