@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, Output, EventEmitter, AfterViewInit, Input, OnChanges } from '@angular/core';
 import { Loader } from '@googlemaps/js-api-loader'; // Usa el Loader de Google Maps
-
+import { environment } from '../../../../environments/environment';
+import { Geolocation } from '@capacitor/geolocation';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -23,9 +24,9 @@ export class MapComponent implements OnInit,OnChanges {
 
 
   private loader = new Loader({
-    apiKey: 'AIzaSyAfs4yQ4H89F6DyfFY8_1BqeZkSx9ght_0', 
+    apiKey: environment.googleMapsApiKey,
     version: 'weekly',
-    libraries: ['marker'] // Asegúrate de incluir la biblioteca de marcadores
+    libraries: ['places', 'marker'] // Asegúrate de incluir la biblioteca de marcadores
   });
 
   ngOnInit() {
@@ -51,7 +52,7 @@ export class MapComponent implements OnInit,OnChanges {
     }
   }
   
-  initMap() {
+  async initMap() {
     const defaultLocation = { lat: -33.4489, lng: -70.6693 }; // Ubicación por defecto (Santiago, Chile)
     const initialLocation = this.location || defaultLocation;
 
@@ -64,15 +65,18 @@ export class MapComponent implements OnInit,OnChanges {
     this.map = new google.maps.Map(this.mapContainer.nativeElement, mapOptions);
     this.addMarker(initialLocation);
 
-    if (!this.location && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
+    if (!this.location) {
+      try {
+        const position = await Geolocation.getCurrentPosition();
         const userLocation = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
         this.map.setCenter(userLocation);
         this.addMarker(userLocation);
-      });
+      } catch (error) {
+        console.error('Error getting user location', error);
+      }
     }
 
     this.map.addListener('click', (event: google.maps.MapMouseEvent) => {
