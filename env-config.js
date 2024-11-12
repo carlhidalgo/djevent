@@ -30,15 +30,17 @@ if (!isAppflow && envFilePath) {
  envConfig = {
 
     production: true,
-    API_URL: process.env.API_URL || '',
-    API_KEY_FIREBASE: process.env.API_KEY_FIREBASE || '',
-    AUTH_DOMAIN: process.env.AUTH_DOMAIN || '',
-    DATABASE_URL: process.env.DATABASE_URL || '',
-    PROJECT_ID: process.env.PROJECT_ID || '',
-    STORAGE_BUCKET: process.env.STORAGE_BUCKET || '',
-    MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID || '',
-    MEASUREMENT_ID: process.env.MEASUREMENT_ID || '',
-    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || ''
+    
+
+    apiKey: process.env.apiKey || '',
+    authDomain: process.env.authDomain || '',
+    projectId: process.env.projectId || '',
+    storageBucket: process.env.storageBucket || '',
+    messagingSenderId: process.env.messagingSenderId || '',
+    appId: process.env.appId || '',
+    measurementId: process.env.measurementId || '',
+
+    googleMapsApiKey: process.env.googleMapsApiKey || ''
 
  };
 
