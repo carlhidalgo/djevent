@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 const dotenv = require('dotenv');
 
 
@@ -36,7 +35,6 @@ if (!isAppflow && envFilePath) {
     PROJECT_ID: process.env.PROJECT_ID || '',
     STORAGE_BUCKET: process.env.STORAGE_BUCKET || '',
     MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID || '',
-    APP_ID: process.env.APP_ID || '',
     MEASUREMENT_ID: process.env.MEASUREMENT_ID || '',
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || ''
 
