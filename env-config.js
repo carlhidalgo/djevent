@@ -18,10 +18,12 @@ const environmentFile = (process.env.ENV || 'development') === 'development' ? `
 let envConfig = {};
 
 if (!isAppflow && envFilePath) {
-
- envConfig = dotenv.parse(fs.readFileSync(envFilePath));
-
-} else {
+    try {
+      envConfig = dotenv.parse(fs.readFileSync(envFilePath));
+    } catch (error) {
+      console.warn(`Warning: No se pudo encontrar el archivo ${envFilePath}. Usando las variables de entorno.`);
+    }
+  } else {
 
  // Usa process.env directamente en Appflow
 
