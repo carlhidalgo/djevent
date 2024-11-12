@@ -24,7 +24,7 @@ import { AddUpdateEventComponent } from './shared/components/add-update-event/ad
     IonicModule.forRoot(),
     AppRoutingModule,
     ReactiveFormsModule,
-    AngularFireModule.initializeApp(environment.envConfig), // Inicializa Firebase con la configuración del entorno
+    AngularFireModule.initializeApp(environment), // Inicializa Firebase con la configuración del entorno
     AngularFireAuthModule, // Importa el módulo de autenticación de Firebase
     AngularFirestoreModule, // Importa el módulo de Firestore de Firebase
     SharedModule
