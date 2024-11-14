@@ -78,20 +78,25 @@ copyEmail() {
   async takeImage() {
     let user = this.user();
     let path = `users/${user.uid}`;
-  
-    
-  
+    let imagePath = `${user.uid}/profile`;
+
+    // Obtén la URL de la imagen anterior
+    const oldImagePath = user.image ? `${user.uid}/profile` : null;
+
     const dataUrl = (await this.utilsSvc.takeImage('Imagen de Perfil')).dataUrl;
+
+    // Comprimir la imagen
+    const compressedDataUrl = await this.utilsSvc.compressImage(dataUrl, 800, 800, 0.8); // Ajusta los parámetros según tus necesidades
 
     const loading = await this.utilsSvc.loading();
     await loading.present();
 
-    let imagePath = `${user.uid}/profile`;
-  
-    user.image = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-    this.firebaseSvc.updateDocument(path, { image: user.image }).then(async res => {
-       
-      this.utilsSvc.saveInLocalStorage('user', user); 
+    try {
+      // Sube la nueva imagen comprimida y elimina la anterior si existe
+      user.image = await this.firebaseSvc.uploadImage(imagePath, compressedDataUrl, oldImagePath);
+      await this.firebaseSvc.updateDocument(path, { image: user.image });
+
+      this.utilsSvc.saveInLocalStorage('user', user);
       this.utilsSvc.presentToast({
         message: 'Imagen actualizada exitosamente',
         duration: 1500,
@@ -99,7 +104,7 @@ copyEmail() {
         position: 'middle',
         icon: 'checkmark-circle-outline'
       });
-    }).catch(error => {
+    } catch (error) {
       console.log(error);
       this.utilsSvc.presentToast({
         message: error.message,
@@ -108,9 +113,9 @@ copyEmail() {
         position: 'middle',
         icon: 'alert-circle-outline'
       });
-    }).finally(() => {
+    } finally {
       loading.dismiss();
-    });
+    }
   }
 
   // ================== updateProfile ==================

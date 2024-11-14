@@ -110,15 +110,28 @@ export class FirebaseService {
   //////////////////////////// Storage ////////////////////////////
 
   // subir imagen
-  async uploadImage(Path: string, dataUrl: string) {
-    return uploadString(ref(getStorage(), Path), dataUrl, 'data_url').then(() => {
-    return getDownloadURL(ref(getStorage(), Path)); 
-  
-  
-      }  
-    )
- 
+  async uploadImage(path: string, dataUrl: string, oldImagePath?: string): Promise<string> {
+    const storage = getStorage();
+    const storageRef = ref(storage, path);
+
+    try {
+        // Elimina la imagen anterior si se proporciona una ruta
+        if (oldImagePath) {
+            const oldImageRef = ref(storage, oldImagePath);
+            await deleteObject(oldImageRef);
+            console.log(`Old image at ${oldImagePath} deleted successfully.`);
+        }
+
+        // Sube la nueva imagen
+        await uploadString(storageRef, dataUrl, 'data_url');
+        const downloadURL = await getDownloadURL(storageRef);
+        return downloadURL;
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        throw error;
+    }
   }
+
 
   async addapplicants(eventId: string, applicantsData: any) {
     const path = `events/${eventId}/applicants`;
