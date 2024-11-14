@@ -23,8 +23,7 @@
 
     <ion-tab-button tab="profile">
       <ion-avatar class="icono-perfil" >
-        <img [src]="user()?.image" alt="Imagen de perfil"/>
-      </ion-avatar>
+        <img [src]="user()?.image ? user().image : 'assets/icon/default-avatar.png'" alt="Imagen de perfil" style="background-color: transparent;"/>      </ion-avatar>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

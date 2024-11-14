@@ -7,7 +7,7 @@
 <ion-content class="ion-padding-top ion-text-center">
 
   <ion-avatar>
-    <img [src]="user()?.image" alt="Imagen de perfil"/>
+    <img [src]="user()?.image ? user().image : 'assets/icon/default-avatar.png'" alt="Imagen de perfil" style="background-color: transparent;"/>
   </ion-avatar>
 
   <ion-button (click)="takeImage()" mode="ios" size="small" shape="round">

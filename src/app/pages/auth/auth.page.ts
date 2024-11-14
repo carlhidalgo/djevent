@@ -37,7 +37,7 @@ export class AuthPage implements OnInit {
 
       }).catch(error => {
         console.log(error);
-        this.utilsSvc.presentToast({ message: error.message, duration: 2000, color: 'danger', position: 'middle', icon: 'alert-circle-outline' });
+        this.utilsSvc.presentToast({ message: "contraseña oh correo incorrecto", duration: 2000, color: 'danger', position: 'middle', icon: 'alert-circle-outline' });
 
       }).finally(() => {
         loading.dismiss();
