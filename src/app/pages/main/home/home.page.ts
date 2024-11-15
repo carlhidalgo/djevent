@@ -18,7 +18,7 @@ export class HomePage implements OnInit {
   @ViewChild('eventModal', { static: true }) eventModal: IonModal;
 
 
-
+  userRole: string | null = null;
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
   toastController = inject(ToastController);
@@ -31,14 +31,16 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.getUserLocation();
+   
   }
 
-  user() {
+  user(): User {
     return this.utilsSvc.getFromLocalStorage('user');
   }
 
   ionViewWillEnter() {
-
+    const user = this.user();
+    this.userRole = user ? user.role : null;
   }
   
   handleRefresh(event) {
@@ -127,7 +129,7 @@ export class HomePage implements OnInit {
     let sub = this.firebaseSvc.getCollectionData(path).subscribe({
      next: (res: any) => {
        console.log(res);
-       this.events = res;
+       this.events = res.filter((event: any) => new Date(event.date) >= new Date());
        this.sortEventsByDistance();
        sub.unsubscribe();
        },

@@ -3,7 +3,7 @@
 
 </app-header>
 <ion-content >
-  <ion-fab horrizontal="end" vertical="bottom"  slot="fixed">
+  <ion-fab *ngIf="userRole === 'Productor'"  horrizontal="end" vertical="bottom"  slot="fixed">
     <ion-fab-button  (click)="addUpdateEvent()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
