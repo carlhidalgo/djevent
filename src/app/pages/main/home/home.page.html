@@ -41,7 +41,8 @@
             <img [src]="event.Image">
           </ion-avatar>
           <ion-label><div class="name">{{event.name}}</div>
-          </ion-label>
+
+          <div>{{event.date | date: 'dd/MM/yyyy, h:mm a'}}</div></ion-label>
         </ion-item>
         <ion-item-options side="start">
           
@@ -92,7 +93,7 @@
 
         <app-map [location]="selectedEvent.location"></app-map>
 
-        <ion-button expand="block" color="primary" (click)="postulate()">Postular</ion-button>
+        <ion-button *ngIf="userRole === 'DJ'" expand="block" color="primary" (click)="postulate()">Postular</ion-button>
       </ion-content>
     </ng-template>
   </ion-modal>

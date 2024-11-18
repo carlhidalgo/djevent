@@ -11,6 +11,7 @@ export interface Event {
         lat: number,
     },
     applicants: string[],
+    acepted: string[],
     confirmed: string[],
     
 }

@@ -2,17 +2,33 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ModalController, ModalOptions, ToastController, ToastOptions } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilsService {
 
+  userRole: string | null = null;
+
   LoadingCtrl = inject(LoadingController);
   toastCtrl = inject(ToastController);
   modalCtrl = inject(ModalController);
   router = inject(Router);
   
+
+
+  
+  user(): User {
+    return this.getFromLocalStorage('user');
+  }
+
+  async getUserRole(): Promise<string | null> {
+    const user = this.user();
+    this.userRole = user ? user.role : null;
+    return this.userRole;
+  }
+
   async takeImage(promptLabelHeader:string) {
     return await Camera.getPhoto({
       quality: 90,

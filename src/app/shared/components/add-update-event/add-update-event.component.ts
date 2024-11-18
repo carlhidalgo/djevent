@@ -31,7 +31,7 @@ form = new FormGroup({
     description: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
     date: new FormControl(new Date().toISOString(), [Validators.required]),
     location: new FormControl({ lat: 0, lng: 0 }, [Validators.required]), // Cambiado a objeto
-    creatorId: new FormControl(''),
+    creatorId: new FormControl('', [Validators.required]),
   });
 
 

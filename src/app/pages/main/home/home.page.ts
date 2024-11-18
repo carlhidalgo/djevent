@@ -18,12 +18,11 @@ export class HomePage implements OnInit {
   @ViewChild('eventModal', { static: true }) eventModal: IonModal;
 
 
-  userRole: string | null = null;
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
   toastController = inject(ToastController);
-
-
+  
+  userRole: string | null = null;
   events: Event[] = [];
   userLocation: { lat: number, lng: number } = { lat: 0, lng: 0 };
   selectedEvent: any;
@@ -38,9 +37,12 @@ export class HomePage implements OnInit {
     return this.utilsSvc.getFromLocalStorage('user');
   }
 
+  async loadUserRole() {
+    this.userRole = await this.utilsSvc.getUserRole();
+  }
   ionViewWillEnter() {
     const user = this.user();
-    this.userRole = user ? user.role : null;
+    this.loadUserRole();
   }
   
   handleRefresh(event) {

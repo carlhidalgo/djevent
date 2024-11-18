@@ -6,4 +6,5 @@ export interface User {
     password: string;
     name: string;
     role: string;  // Nuevo campo de rol
+    rating: number; // Nuevo campo de rating
 }

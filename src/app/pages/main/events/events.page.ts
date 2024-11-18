@@ -13,6 +13,7 @@ import { AddUpdateEventComponent } from 'src/app/shared/components/add-update-ev
 export class EventsPage implements OnInit {
 
 
+  userRole: string | null = null;
 
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
@@ -22,14 +23,18 @@ export class EventsPage implements OnInit {
 
 
   ngOnInit() {
+    this.loadUserRole();
   }
 
   user(): User {
     return this.utilsSvc.getFromLocalStorage('user');
   }
 
-
+  async loadUserRole() {
+    this.userRole = await this.utilsSvc.getUserRole();
+  }
   ionViewWillEnter() {
+    this.loadUserRole();
     this.getEventsUser();
   }
 
