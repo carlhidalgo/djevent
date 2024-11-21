@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators,FormBuilder } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
 import { Event } from 'src/app/models/event.model';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -19,7 +19,8 @@ export class AddUpdateEventComponent  implements OnInit {
   @ViewChild('addressInput') addressInput!: ElementRef; // Elemento de referencia al campo de dirección
 
   mapCenter: google.maps.LatLngLiteral = { lat: -33.0, lng: -71.0 }; // Coordenadas iniciales
-
+  
+  events: Event[] = [];
   address: string = '';
   geocoder: any;
   autocomplete: any; // Instancia del autocompletado de Google Places
@@ -39,11 +40,15 @@ form = new FormGroup({
   utilsSvc = inject(UtilsService);
   toastController = inject(ToastController);
 
+  isEditMode: boolean = false;
   
   user = {} as User;
   charCount = 0;
 
-
+  constructor(    
+    private fb: FormBuilder,
+  ) { }
+  
 
   ngOnInit() {
 
@@ -57,6 +62,19 @@ form = new FormGroup({
 
     this.updateCharCount(); // Inicializar el contador de caracteres
     if (this.event) this.form.setValue(this.event);
+
+    this.isEditMode = !!this.event;
+    this.form = this.fb.group({
+      id: [this.event ? this.event.id : ''],
+      name: [this.event ? this.event.name : '', [Validators.required, Validators.minLength(6)]],
+      description: [this.event ? this.event.description : '', Validators.required],
+      date: [this.event ? this.event.date : '', Validators.required],
+      Image: [this.event ? this.event.Image : ''],
+      location: [this.event ? this.event.location : { lat: 0, lng: 0 }, Validators.required],
+      creatorId: [this.user.uid, Validators.required],
+
+    });
+    this.updateCharCount();
     
   }
   
@@ -187,6 +205,45 @@ form = new FormGroup({
         loading.dismiss();
       })
     
+  }
+
+  // ================== Eliminar evento ==================
+  async deleteEvent(event: Event) {
+    
+
+    // let path = `users/${this.user.uid}/events`;   
+     let path = `events/${event.id}`;
+  
+     const loading = await this.utilsSvc.loading();
+     await loading.present();
+  
+  
+     let imagePath = await this.firebaseSvc.getFilePath(event.Image);
+      await this.firebaseSvc.deletefile(imagePath);
+     
+  
+     this.firebaseSvc.deleteDocument(path).then(async res => {
+  
+  
+  
+       this.events = this.events.filter(e => e.id !== event.id);
+  
+  
+  
+  
+       this.utilsSvc.presentToast({ message: 'evento eliminado exitosamente', duration: 1500, color: 'succes', position: 'middle', icon: 'checkmark-circle-outline' });
+  
+       
+  
+       
+     }).catch(error => {
+       console.log(error);
+       this.utilsSvc.presentToast({ message: error.message, duration: 2000, color: 'danger', position: 'middle', icon: 'alert-circle-outline' });
+  
+     }).finally(() => {
+       loading.dismiss();
+     })
+   
   }
 
 }

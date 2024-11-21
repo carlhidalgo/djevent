@@ -60,16 +60,10 @@
     <!-- Componente de mapa -->
     <app-map (locationSelected)="onLocationSelected($event)"></app-map>
 
-    <ion-button mode="ios" class="ion-margin" type="submit" [disabled]="form.invalid" expand="block" color="primary">
-      {{ event ? 'actualizar evento' : 'Agregar evento' }}
-      <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
-    </ion-button>
+ 
 
-     <!-- Botón con atributo inert -->
-     <button type="button" class="button-native" part="native" inert>
-      <ion-icon part="close-icon" class="close-icon ios hydrated" role="img"></ion-icon>
-      
-    </button>
-
+    <ion-button mode="ios" class="ion-margin"  type="submit" [disabled]="!form.valid">{{ isEditMode ? 'Actualizar' : 'Guardar' }}</ion-button>
+    <ion-button *ngIf="isEditMode" color="danger" (click)="deleteEvent(event)">Eliminar</ion-button>
+ 
   </form>
 </ion-content>

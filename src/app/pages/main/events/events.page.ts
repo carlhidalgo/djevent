@@ -38,12 +38,13 @@ export class EventsPage implements OnInit {
     this.getEventsUser();
   }
 
-  addUpdateEvent( event?: Event) {
-    this.utilsSvc.presentModal({
+  async addUpdateEvent(event?: Event) {
+    await this.utilsSvc.presentModal({
       component: AddUpdateEventComponent,
       cssClass: 'add-update-modal',
       componentProps: { event }
     });
+    
   }
   
   //obtener eventos
@@ -66,48 +67,6 @@ export class EventsPage implements OnInit {
 
 }
 
-//eliminar evento
-async deleteEvent(event: Event) {
-    
 
-  // let path = `users/${this.user.uid}/events`;   
-   let path = `events/${event.id}`;
-
-   const loading = await this.utilsSvc.loading();
-   await loading.present();
-
-
-   let imagePath = await this.firebaseSvc.getFilePath(event.Image);
-    await this.firebaseSvc.deletefile(imagePath);
-   
-
-   this.firebaseSvc.deleteDocument(path).then(async res => {
-
-
-
-     this.events = this.events.filter(e => e.id !== event.id);
-
-
-
-
-     this.utilsSvc.presentToast({ message: 'evento eliminado exitosamente', duration: 1500, color: 'succes', position: 'middle', icon: 'checkmark-circle-outline' });
-
-     
-
-     
-   }).catch(error => {
-     console.log(error);
-     this.utilsSvc.presentToast({ message: error.message, duration: 2000, color: 'danger', position: 'middle', icon: 'alert-circle-outline' });
-
-   }).finally(() => {
-     loading.dismiss();
-   })
- 
-}
-
-  
-  editEvent(_t9: Event) {
-  throw new Error('Method not implemented.');
-  }
 
 }
