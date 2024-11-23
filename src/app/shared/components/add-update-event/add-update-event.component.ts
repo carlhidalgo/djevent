@@ -2,7 +2,7 @@ import { Component, ElementRef, inject, Input, OnInit, ViewChild } from '@angula
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { FormGroup, FormControl, Validators,FormBuilder } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
-import { Event } from 'src/app/models/event.model';
+import { AppEvent } from 'src/app/models/event.model';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ToastController } from '@ionic/angular'; 
 
@@ -13,14 +13,14 @@ import { ToastController } from '@ionic/angular';
 })
 export class AddUpdateEventComponent  implements OnInit {
 
-  @Input() event: Event 
+  @Input() event: AppEvent 
   
   
   @ViewChild('addressInput') addressInput!: ElementRef; // Elemento de referencia al campo de dirección
 
   mapCenter: google.maps.LatLngLiteral = { lat: -33.0, lng: -71.0 }; // Coordenadas iniciales
   
-  events: Event[] = [];
+  events: AppEvent[] = [];
   address: string = '';
   geocoder: any;
   autocomplete: any; // Instancia del autocompletado de Google Places
@@ -51,33 +51,37 @@ form = new FormGroup({
   
 
   ngOnInit() {
-
     this.geocoder = new google.maps.Geocoder();
-
     this.user = this.utilsSvc.getFromLocalStorage('user');
 
-    
-
+    // Establecer el creador del evento
     this.form.controls['creatorId'].setValue(this.user.uid);
 
-    this.updateCharCount(); // Inicializar el contador de caracteres
-    if (this.event) this.form.setValue(this.event);
-
+    // Determinar si estás editando un evento existente
     this.isEditMode = !!this.event;
+
+    // Configurar el formulario con valores existentes o predeterminados
     this.form = this.fb.group({
       id: [this.event ? this.event.id : ''],
       name: [this.event ? this.event.name : '', [Validators.required, Validators.minLength(6)]],
       description: [this.event ? this.event.description : '', Validators.required],
-      date: [this.event ? this.event.date : '', Validators.required],
+      date: [
+        this.event && this.event.date 
+          ? this.event.date 
+          : new Date().toISOString(), // Usar una fecha válida predeterminada si no hay valor
+        Validators.required,
+      ],
       Image: [this.event ? this.event.Image : ''],
-      location: [this.event ? this.event.location : { lat: 0, lng: 0 }, Validators.required],
+      location: [
+        this.event ? this.event.location : { lat: 0, lng: 0 }, 
+        Validators.required,
+      ],
       creatorId: [this.user.uid, Validators.required],
-
     });
+
     this.updateCharCount();
-    
   }
-  
+
   adjustTextareaHeight(event: Event) {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto';
@@ -106,10 +110,25 @@ form = new FormGroup({
   
   async submit() {
     if (this.form.valid) {
-    
-      if (this.event) this.updateEvent();
-       else  this.createEvent()
-      
+      const dateValue = this.form.controls['date'].value;
+
+      // Validar que el campo 'date' tenga un formato válido
+      if (!dateValue || isNaN(Date.parse(dateValue))) {
+        this.utilsSvc.presentToast({
+          message: 'Por favor, ingrese una fecha válida.',
+          duration: 2000,
+          color: 'danger',
+          position: 'middle',
+          icon: 'alert-circle-outline',
+        });
+        return; // Detener el envío si la fecha no es válida
+      }
+
+      if (this.event) {
+        this.updateEvent();
+      } else {
+        this.createEvent();
+      }
     }
   }
 
@@ -208,7 +227,7 @@ form = new FormGroup({
   }
 
   // ================== Eliminar evento ==================
-  async deleteEvent(event: Event) {
+  async deleteEvent(event: AppEvent) {
     
 
     // let path = `users/${this.user.uid}/events`;   

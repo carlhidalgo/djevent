@@ -1,4 +1,4 @@
-export interface Event {
+export interface AppEvent  {
     target: HTMLTextAreaElement;
     id: string,
     name: string,

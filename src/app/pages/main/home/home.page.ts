@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { AddUpdateEventComponent } from 'src/app/shared/components/add-update-event/add-update-event.component';
-import { Event } from 'src/app/models/event.model';
+import { AppEvent } from 'src/app/models/event.model';
 import { User  } from 'src/app/models/user.model';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
@@ -22,14 +22,22 @@ export class HomePage implements OnInit {
   utilsSvc = inject(UtilsService);
   toastController = inject(ToastController);
   
+
   userRole: string | null = null;
-  events: Event[] = [];
+  events: AppEvent[] = [];
   userLocation: { lat: number, lng: number } = { lat: 0, lng: 0 };
   selectedEvent: any;
   manualLocation: { lat: number, lng: number };
 
   ngOnInit() {
     this.getUserLocation();
+
+    const user = this.user();
+    if (user) {
+      console.log('User ID:', user.uid);
+    } else {
+      console.log('No user found in local storage');
+    }
    
   }
 
@@ -97,15 +105,27 @@ export class HomePage implements OnInit {
         return; // Salir si ya está registrado
       }
   
+     const user = this.user();
       const applicantsData = {
         userId: userId,
-        userName: this.user().name,
-        userEmail: this.user().email,
+        image: user.image || '', // Asegúrate de que no sea undefined
+        name: user.name || '', // Asegúrate de que no sea undefined
+        email: user.email || '', // Asegúrate de que no sea undefined
+        rating: user.rating || 0, // Asegúrate de que no sea undefined
+      };
+
+      const eventData = {
+        Image: this.selectedEvent.Image || '', // Asegúrate de que no sea undefined
+        name: this.selectedEvent.name || '', // Asegúrate de que no sea undefined
+        date: this.selectedEvent.date || '', // Asegúrate de que no sea undefined
+        location: this.selectedEvent.location || { lat: 0, lng: 0 }, // Asegúrate de que no sea undefined
+        creatorId: this.selectedEvent.creatorId || '', // Asegúrate de que no sea undefined
       };
   
       try {
         // Si no está registrado, agrega al applicante
         await this.firebaseSvc.addapplicants(this.selectedEvent.id, applicantsData);
+        await this.firebaseSvc.addEventToUserCollection( userId, eventData);
         const toast = await this.toastController.create({
           message: 'Postulación enviada con éxito',
           duration: 2000,
@@ -147,7 +167,7 @@ export class HomePage implements OnInit {
 
  
 
-  addUpdateEvent( event?: Event) {
+  addUpdateEvent( event?: AppEvent) {
     this.utilsSvc.presentModal({
       component: AddUpdateEventComponent,
       cssClass: 'add-update-modal',

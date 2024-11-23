@@ -32,27 +32,18 @@
       <ion-label position="floating">Descripción</ion-label>
       <ion-textarea 
         formControlName="description" 
-        (input)="updateCharCount(); adjustTextareaHeight(event)">
+        (input)="updateCharCount(); adjustTextareaHeight($event)">
       </ion-textarea>
     </ion-item>
     
     <ion-text>{{ charCount }}/1000 caracteres</ion-text>
     
 
-   <ion-item class="datetime">
-  <ion-label>Fecha</ion-label>
-  <ion-datetime-button datetime="datetime"></ion-datetime-button>
-  <ion-modal [keepContentsMounted]="true">
-    <ng-template>
-      <ion-datetime 
-        id="datetime" 
-        formControlName="date" 
-        display-format="MM/DD/YYYY">
-      </ion-datetime>
-    </ng-template>
-  </ion-modal>
-</ion-item>
-    
+    <ion-item class="datetime">
+      <ion-label>Fecha</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" formControlName="date"></ion-datetime>
+    </ion-item>
+      
     
 
     <app-custom-input [Control]="form.controls.location" type="text" label="Ubicación"></app-custom-input>

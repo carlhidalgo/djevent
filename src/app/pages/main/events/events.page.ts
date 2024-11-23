@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
-import { Event } from 'src/app/models/event.model';
+import { AppEvent } from 'src/app/models/event.model';
 import { AddUpdateEventComponent } from 'src/app/shared/components/add-update-event/add-update-event.component';
 
 @Component({
@@ -18,8 +18,8 @@ export class EventsPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
-  events: Event[] = [];
-
+  events: AppEvent[] = [];
+  postulatedEvents: AppEvent[] = [];
 
 
   ngOnInit() {
@@ -36,9 +36,10 @@ export class EventsPage implements OnInit {
   ionViewWillEnter() {
     this.loadUserRole();
     this.getEventsUser();
+    this.getPostulatedEvents();
   }
 
-  async addUpdateEvent(event?: Event) {
+  async addUpdateEvent(event?: AppEvent) {
     await this.utilsSvc.presentModal({
       component: AddUpdateEventComponent,
       cssClass: 'add-update-modal',
@@ -67,6 +68,27 @@ export class EventsPage implements OnInit {
 
 }
 
+  //obtener eventos postulados
+
+getPostulatedEvents() {
+  let path = `users/${this.user().uid}/eventspostulate`;
+  let user = this.user();
+  
+  let sub = this.firebaseSvc.getCollectionData(path, user.uid).subscribe({
+   next: (res: any) => {
+     console.log(res);
+     this.postulatedEvents = res;
+     sub.unsubscribe();
+     console.log(this.postulatedEvents);
+     },
+     error: (err: any) => {
+       console.error('Error fetching events:', err);
+     }
+
+
+  });
+
+}
 
 
 }

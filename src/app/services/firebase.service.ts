@@ -100,12 +100,18 @@ export class FirebaseService {
   }
 
    // agregar documento con ID personalizado
-   addDocument(path: string, data: any, id?: string) {
+   async addDocument(path: string, data: any, id?: string) {
     const firestore = getFirestore();
-    const docRef = id ? doc(firestore, path, id) : doc(collection(firestore, path)); // Si se proporciona un ID, se usa ese, sino Firebase generará uno.
-    return setDoc(docRef, data); // Usa setDoc en lugar de addDoc
+    if (id) {
+      const docRef = doc(firestore, path, id);
+      await setDoc(docRef, data);
+      return docRef;
+    } else {
+      const collectionRef = collection(firestore, path);
+      const docRef = await addDoc(collectionRef, data);
+      return docRef;
+    }
   }
-
 
   //////////////////////////// Storage ////////////////////////////
 
@@ -141,6 +147,18 @@ export class FirebaseService {
       console.log('applicants agregado con éxito');
     } catch (error) {
       console.error('Error al agregar applicants:', error);
+      throw error; 
+    }
+  }
+
+  async addEventToUserCollection(userId: string, eventData: any) {
+    const path = `users/${userId}/eventspostulate`;
+    try {
+      // Aquí se usa addDocument para agregar el evento a la colección
+      await this.addDocument(path, eventData);
+      console.log('Evento agregado con éxito a la colección del usuario');
+    } catch (error) {
+      console.error('Error al agregar evento a la colección del usuario:', error);
       throw error; 
     }
   }

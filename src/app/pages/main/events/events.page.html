@@ -14,19 +14,35 @@
     
   <ion-list>
     <ion-item  (click)="addUpdateEvent(event)" class="product-item" *ngFor="let event of events">
-      <ion-item >
+     
         <ion-avatar>
           <img [src]="event.Image">
         </ion-avatar>
         <ion-label><div class="name">{{event.name}}</div>
         </ion-label>
-      </ion-item>
+      
       
 
       
         
     </ion-item> 
 
+  </ion-list>
+
+  <ion-list>
+    <ion-item class="product-item" *ngFor="let evento of postulatedEvents ">
+      
+        <ion-avatar>
+          <img [src]="evento.Image">
+        </ion-avatar>
+        <ion-label><div class="name">{{evento.name}}</div>
+
+        <div>{{evento.date | date: 'dd/MM/yyyy, h:mm a'}}</div></ion-label>
+      
+      
+    
+        
+    </ion-item>
   </ion-list>
   
       
