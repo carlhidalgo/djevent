@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:978908157887:android:7eceeb4fb89d60b38a730a",
+        "mobilesdk_app_id": "1:978908157887:android:e67c116e541272608a730a",
         "android_client_info": {
-          "package_name": "com.duoc.djeventhub"
+          "package_name": "com.djevent.app"
         }
       },
       "oauth_client": [
