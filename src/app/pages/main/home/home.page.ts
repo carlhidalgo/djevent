@@ -107,7 +107,7 @@ export class HomePage implements OnInit {
   
      const user = this.user();
       const applicantsData = {
-        userId: userId,
+        id: userId,
         image: user.image || '', // Asegúrate de que no sea undefined
         name: user.name || '', // Asegúrate de que no sea undefined
         email: user.email || '', // Asegúrate de que no sea undefined

@@ -10,7 +10,7 @@ export interface AppEvent  {
         lng: number,
         lat: number,
     },
-    applicants: string[],
+    applicants: { userId: string, userEmail: string, userImage: string, userName: string, userRating: number }[]; // Asumiendo que applicants es un array de objetos con userId y otros detalles
     acepted: string[],
     confirmed: string[],
     

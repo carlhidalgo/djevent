@@ -15,9 +15,13 @@
   </ion-button>
 
   <div class="profile-info">
-    <h2>{{user().name}}</h2>
+    <h2>{{user().nickname}}</h2>
+    <h3>{{user().name}}</h3>
     <p>{{user().email}}</p>
     <p>{{user().role}}</p>
+    <p>
+      <ion-icon name="star"></ion-icon> {{user().rating | number:'1.1-1'}}
+    </p>
     
     <ion-button (click)="copyEmail()" mode="ios" size="small" shape="round">
       Copiar Correo

@@ -15,6 +15,16 @@
         <div *ngIf="form.controls.name.errors?.['minlength']">el nombre debe tener al menos 3 caracteres</div>
       </div>
 
+            <!--=============nickname=============-->
+            <app-custom-input autocomplete="nickname" icon="person-outline" [Control]="form.controls.nickname" type="nickname"
+            label="apodo"></app-custom-input>
+    
+          <div class="validators" *ngIf="form.controls.name.errors && form.controls.name.touched">
+            <div *ngIf="form.controls.name.errors?.['required']">el apodo es requerido</div>
+            <div *ngIf="form.controls.name.errors?.['minlength']">el apodo debe tener al menos 3 caracteres</div>
+          </div>
+    
+
       <!--=============email=============-->
       <app-custom-input autocomplete="email" icon="mail-outline" [Control]="form.controls.email" type="email"
         label="correo"></app-custom-input>

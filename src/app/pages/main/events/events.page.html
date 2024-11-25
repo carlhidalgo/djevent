@@ -29,8 +29,8 @@
 
   </ion-list>
 
-  <ion-list>
-    <ion-item class="product-item" *ngFor="let evento of postulatedEvents ">
+  <ion-list *ngIf="userRole === 'DJ'" >
+    <ion-item class="product-item"  *ngFor="let evento of postulatedEvents ">
       
         <ion-avatar>
           <img [src]="evento.Image">

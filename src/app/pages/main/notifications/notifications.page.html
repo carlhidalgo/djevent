@@ -1,9 +1,26 @@
-<app-header title="Notificaciones" >
+<app-header title="Notificaciones"></app-header>
 
 
-</app-header>
 
 <ion-content>
-  
-  
-</ion-content>
+
+    <ion-list>
+
+      <ion-item-sliding *ngFor="let notification of notifications">
+        <ion-item>
+          <ion-label>
+            <h2>{{ notification.title }}</h2>
+            <p>{{ notification.body }}</p>
+            <p>{{ notification.timestamp | date: 'dd/MM/yyyy, h:mm a' }}</p>
+          </ion-label>
+          <ion-button *ngIf="notification.title === 'Evento Finalizado'" (click)="rateEvent(notification.creatorId)">
+            Calificar
+          </ion-button>
+        </ion-item>
+        <ion-item-options side="start">
+          <!-- Opciones adicionales si es necesario -->
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+  </ion-content>

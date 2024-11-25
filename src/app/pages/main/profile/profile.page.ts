@@ -34,10 +34,15 @@ export class ProfilePage {
 }
 
   ngOnInit() {
+
     this.darkMode = localStorage.getItem('darkMode') === 'true';
     document.body.classList.toggle('dark', this.darkMode); 
   }
-
+ 
+  ionViewWillEnter() {
+    this.user();
+  }
+  
 copyEmail() {
   const user = this.user();
   const email = user.email;
@@ -62,11 +67,12 @@ copyEmail() {
 }
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
-
+  rating = this.utilsSvc.getFromLocalStorage('rating');
 
   user(): User {
     return this.utilsSvc.getFromLocalStorage('user');
   }
+
 
 
   signOut() {

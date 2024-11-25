@@ -5,6 +5,9 @@ export interface User {
     displayName: string;
     password: string;
     name: string;
+    nickname: string; // Nuevo campo de apodo
     role: string;  // Nuevo campo de rol
-    rating: number; // Nuevo campo de rating
+    ratings: number []; // Nuevo campo de rating
+    rating: number; // Cambiado a number para almacenar la calificación
+    termsConditions: boolean;  // Nuevo campo para aceptar términos y condiciones
 }

@@ -18,8 +18,10 @@ export class SignUpPage implements OnInit {
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     confirmPassword: new FormControl('', [Validators.required]),  // Nuevo campo de confirmación de contraseña
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    nickname: new FormControl('', [Validators.required, Validators.minLength(3)]),  // Nuevo campo para el apodo
     role: new FormControl('', Validators.required),  // Nuevo campo para el rol
-    termsConditions: new FormControl(false, Validators.requiredTrue)  // Nuevo campo para aceptar términos y condiciones
+    ratings: new FormControl([]),  // Cambiar el campo de calificación a un array
+    rating: new FormControl(0),  // Campo para el promedio de calificaciones    termsConditions: new FormControl(false, Validators.requiredTrue)  // Nuevo campo para aceptar términos y condiciones
   }, { validators: this.passwordsMatchValidator });  // Agregar validador personalizado
 
   firebaseSvc = inject(FirebaseService);

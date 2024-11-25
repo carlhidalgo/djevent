@@ -112,6 +112,42 @@ export class FirebaseService {
       return docRef;
     }
   }
+ 
+  //////////////////////////// Ratings ////////////////////////////
+
+
+  async addRating(userId: string, rating: number) {
+    const userDocRef = doc(getFirestore(), `users/${userId}`);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const ratings = userData['ratings'] || [];
+      ratings.push(rating);
+      await updateDoc(userDocRef, { ratings });
+      console.log('Calificación agregada correctamente');
+    } else {
+      console.error('User document does not exist:', userId);
+    }
+  }
+
+  async calculateAndUpdateAverageRating(userId: string) {
+    const userDocRef = doc(getFirestore(), `users/${userId}`);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const ratings = userData['ratings'] || [];
+      const averageRating = this.calculateAverageRating(ratings);
+      await updateDoc(userDocRef, { rating: averageRating });
+      console.log('Promedio de calificaciones actualizado:', averageRating);
+    } else {
+      console.error('User document does not exist:', userId);
+    }
+  }
+
+  calculateAverageRating(ratings: number[]): number {
+    const total = ratings.reduce((sum, rating) => sum + rating, 0);
+    return total / ratings.length;
+  }
 
   //////////////////////////// Storage ////////////////////////////
 

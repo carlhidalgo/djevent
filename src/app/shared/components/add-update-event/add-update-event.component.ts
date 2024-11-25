@@ -5,6 +5,7 @@ import { User } from 'src/app/models/user.model';
 import { AppEvent } from 'src/app/models/event.model';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ToastController } from '@ionic/angular'; 
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-add-update-event',
@@ -35,7 +36,7 @@ form = new FormGroup({
     creatorId: new FormControl('', [Validators.required]),
   });
 
-
+  notificationSvc = inject(NotificationService);
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
   toastController = inject(ToastController);
@@ -155,6 +156,7 @@ form = new FormGroup({
 
       this.firebaseSvc.addDocument(path, this.form.value).then(async res => {
 
+        await this.notificationSvc.scheduleEventNotification(this.form.value as AppEvent);
 
 
         
@@ -163,7 +165,7 @@ form = new FormGroup({
         this.utilsSvc.dismisModal({success : true});
         
 
-        this.utilsSvc.presentToast({ message: 'evento agregado exitosamente', duration: 1500, color: 'succes', position: 'middle', icon: 'checkmark-circle-outline' });
+        this.utilsSvc.presentToast({ message: 'evento agregado exitosamente', duration: 1500, color: 'success', position: 'middle', icon: 'checkmark-circle-outline' });
 
         
 

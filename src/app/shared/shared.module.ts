@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AddUpdateEventComponent } from './components/add-update-event/add-update-event.component';
 import { MapComponent } from './components/map/map.component';
+import { RatingComponent } from './components/rating/rating.component';
 
 
 
@@ -17,14 +18,17 @@ import { MapComponent } from './components/map/map.component';
       CustomInputComponent,
       LogoComponent,
       AddUpdateEventComponent,
-      MapComponent
+      MapComponent,
+      RatingComponent
+
     ],
   exports: [
     HeaderComponent,
     CustomInputComponent,
     LogoComponent,
     MapComponent,
-    AddUpdateEventComponent
+    AddUpdateEventComponent,
+    RatingComponent
   ],
   imports: [
     CommonModule,
