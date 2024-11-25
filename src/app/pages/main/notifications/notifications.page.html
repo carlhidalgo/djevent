@@ -13,7 +13,7 @@
             <p>{{ notification.body }}</p>
             <p>{{ notification.timestamp | date: 'dd/MM/yyyy, h:mm a' }}</p>
           </ion-label>
-          <ion-button *ngIf="notification.title === 'Evento Finalizado'" (click)="rateEvent(notification.creatorId)">
+          <ion-button *ngIf="notification.title === 'Evento Finalizado'" (click)="rateEvent(notification)">
             Calificar
           </ion-button>
         </ion-item>

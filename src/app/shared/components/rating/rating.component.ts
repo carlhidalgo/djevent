@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { AppEvent } from 'src/app/models/event.model';
+import { Notification } from 'src/app/models/notification.model';
 import { User } from 'src/app/models/user.model';
 import { UtilsService } from 'src/app/services/utils.service';
 
@@ -11,10 +11,15 @@ import { UtilsService } from 'src/app/services/utils.service';
   styleUrls: ['./rating.component.scss']
 })
 export class RatingComponent implements OnInit {
-  @Input() event: AppEvent;
+  @Input() notification: Notification;
   ratingForm: FormGroup;
   user: User;
   userRole: string | null = null;
+
+
+  form = new FormGroup({
+  
+  });
 
   constructor(
     private fb: FormBuilder,
@@ -33,29 +38,53 @@ export class RatingComponent implements OnInit {
     if (this.ratingForm.valid) {
       const rating = this.ratingForm.value.rating;
 
-      // Determinar a quién va dirigida la calificación
-      let recipientId: string;
-      if (this.user.role.toLowerCase() === 'dj') {
-        recipientId = this.event.creatorId; // Calificación va al productor
-      } else if (this.user.role.toLowerCase() === 'producer') {
-        if (this.event.applicants.length > 0) {
-          recipientId = this.event.applicants[0].userId; // Calificación va al primer DJ en la lista de applicants
-        } else {
-          console.error('No se encontró ningún DJ en la lista de applicants');
-          return;
-        }
-      } else {
-        console.error('Rol de usuario no reconocido');
+      // Calificación va al productor usando creatorId de la notificación
+      const recipientId = this.notification.creatorId;
+
+      console.log('Recipient ID:', recipientId); // Verificar el recipientId en la consola
+
+      if (!recipientId) {
+        console.error('Recipient ID is undefined');
         return;
       }
 
+      const loading = await this.utilsSvc.loading();
+      await loading.present();
+
       try {
-        // Agregar la calificación al destinatario correcto
-        await this.firebaseSvc.addRating(recipientId, rating);
-        console.log('Calificación enviada correctamente');
+        // Obtener el documento del usuario
+        const userDoc = await this.firebaseSvc.getDocument(`users/${recipientId}`);
+        if (userDoc) {
+          const ratings = userDoc['ratings'] || [];
+          ratings.push(rating);
+          const averageRating = this.firebaseSvc.calculateAverageRating(ratings);
+
+          // Actualizar solo los campos ratings y rating
+          await this.firebaseSvc.updateDocument(`users/${recipientId}`, { ratings, rating: averageRating });
+          console.log('Calificación enviada correctamente');
+        } else {
+          console.error('User document does not exist:', recipientId);
+        }
+
         this.utilsSvc.dismisModal({ success: true });
+        this.utilsSvc.presentToast({
+          message: 'Calificación enviada correctamente',
+          duration: 1500,
+          color: 'success',
+          position: 'middle',
+          icon: 'checkmark-circle-outline'
+        });
       } catch (error) {
         console.error('Error al enviar la calificación:', error);
+        this.utilsSvc.presentToast({
+          message: error.message,
+          duration: 2000,
+          color: 'danger',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
+      } finally {
+        loading.dismiss();
       }
     }
   }

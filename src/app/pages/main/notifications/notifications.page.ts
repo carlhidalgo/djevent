@@ -1,11 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { Notification } from 'src/app/models/notification.model';
 import { AppEvent } from 'src/app/models/event.model';
 import { RatingComponent } from 'src/app/shared/components/rating/rating.component';
-import { LocalNotifications } from '@capacitor/local-notifications';
-import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-notifications',
@@ -13,65 +13,36 @@ import { NotificationService } from 'src/app/services/notification.service';
   styleUrls: ['./notifications.page.scss'],
 })
 export class NotificationsPage implements OnInit {
-  firebaseSvc = inject(FirebaseService);
-  utilsSvc = inject(UtilsService);
-  modalCtrl = inject(ModalController);
-  notificationSvc = inject(NotificationService);
+  notifications: Notification[] = [];
+  user: any;
 
-  notifications: any[] = [];
-  selectedNotification: any;
-
-  constructor() { }
+  constructor(
+    private firebaseSvc: FirebaseService,
+    private utilsSvc: UtilsService,
+    private modalCtrl: ModalController
+  ) {}
 
   ngOnInit() {
-    this.setupNotificationListener();
-    this.notificationSvc.initFCM();
+    this.user = this.utilsSvc.getFromLocalStorage('user');
     this.getNotifications();
   }
 
-  async setupNotificationListener() {
-    LocalNotifications.addListener('localNotificationActionPerformed', async (notification) => {
-      const eventId = notification.notification.extra.eventId;
-      const eventDoc = await this.firebaseSvc.getDocument(`events/${eventId}`);
-      if (eventDoc) {
-        const event = this.convertToAppEvent(eventDoc);
-        this.rateEvent(event);
-      }
-    });
-  }
-
-  convertToAppEvent(docData: any): AppEvent {
-    return {
-      target: docData.target,
-      id: docData.id,
-      name: docData.name,
-      creatorId: docData.creatorId,
-      Image: docData.Image,
-      description: docData.description,
-      date: docData.date,
-      location: docData.location,
-      applicants: docData.applicants,
-      acepted: docData.acepted,
-      confirmed: docData.confirmed,
-    };
-  }
-
-  async rateEvent(event: AppEvent) {
+  async rateEvent(notification: Notification) {
     await this.utilsSvc.presentModal({
       component: RatingComponent,
       cssClass: 'rating-modal',
-      componentProps: { event }
+      componentProps: { notification }
     });
 
     this.getNotifications(); // Actualizar la lista de notificaciones cuando se cierre el modal
   }
 
   getNotifications() {
-    const user = this.utilsSvc.getFromLocalStorage('user');
-    const path = `users/${user.uid}/notifications`;
+    const path = `users/${this.user.uid}/notifications`;
     this.firebaseSvc.getCollectionData(path).subscribe({
-      next: (notifications: any[]) => {
+      next: (notifications: Notification[]) => {
         this.notifications = notifications;
+        this.utilsSvc.saveInLocalStorage('notifications', notifications); // Guardar en local
         this.triggerDailyNotifications(notifications);
       },
       error: (err: any) => {
@@ -80,7 +51,7 @@ export class NotificationsPage implements OnInit {
     });
   }
 
-  triggerDailyNotifications(notifications: any[]) {
+  triggerDailyNotifications(notifications: Notification[]) {
     const today = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
     const todayNotifications = notifications.filter(notification => notification.timestamp.split('T')[0] === today);
 
@@ -100,16 +71,5 @@ export class NotificationsPage implements OnInit {
         ]
       });
     }
-  }
-
-
-  openNotificationModal(notification: any) {
-    this.selectedNotification = notification;
-    // Abre el modal de notificación
-  }
-
-  closeNotificationModal() {
-    this.selectedNotification = null;
-    // Cierra el modal de notificación
   }
 }
