@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { AddUpdateEventComponent } from './components/add-update-event/add-update-event.component';
 import { MapComponent } from './components/map/map.component';
 import { RatingComponent } from './components/rating/rating.component';
-
+import { ApplicantsListComponent } from './components/applicants-list/applicants-list.component';
 
 
 @NgModule({
@@ -19,7 +19,8 @@ import { RatingComponent } from './components/rating/rating.component';
       LogoComponent,
       AddUpdateEventComponent,
       MapComponent,
-      RatingComponent
+      RatingComponent,
+      ApplicantsListComponent
 
     ],
   exports: [
@@ -28,7 +29,8 @@ import { RatingComponent } from './components/rating/rating.component';
     LogoComponent,
     MapComponent,
     AddUpdateEventComponent,
-    RatingComponent
+    RatingComponent,
+    ApplicantsListComponent
   ],
   imports: [
     CommonModule,

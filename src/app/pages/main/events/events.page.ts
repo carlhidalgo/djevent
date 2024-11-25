@@ -6,6 +6,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 import { AppEvent } from 'src/app/models/event.model';
 import { AddUpdateEventComponent } from 'src/app/shared/components/add-update-event/add-update-event.component';
 import { NotificationService } from 'src/app/services/notification.service';
+import { ApplicantsListComponent } from 'src/app/shared/components/applicants-list/applicants-list.component';
 
 @Component({
   selector: 'app-events',
@@ -53,6 +54,16 @@ export class EventsPage implements OnInit {
     
   }
   
+  async openApplicantsList(eventId: string, event: Event) {
+    event.stopPropagation(); // Evitar que el evento de clic en el item se dispare
+    await this.utilsSvc.presentModal({
+      component: ApplicantsListComponent,
+      cssClass: 'applicants-list-modal',
+      componentProps: { eventId }
+    });
+  }
+
+
   //obtener eventos
   getEventsUser() {
     let path = `events`;
